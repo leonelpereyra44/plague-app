@@ -11,8 +11,9 @@ import Voladores from "../utils/voladores"; // Importamos el componente Voladore
 import Caminadores from "../utils/caminadores"; // Importamos el componente Caminadores
 import Roedores from "../utils/roedores"; // Importamos el componente Roedores
 import ProductosRoedores from "../utils/productosRoedores"; // Importamos el componente ProductosRoedores
+import Empresa from "../utils/empresa"; // Importamos el componente Empresa
 
-export default function DonYeyoHi() {
+export default function GenerarPlanilla() {
   const insets = useSafeAreaInsets();
 
   const [showVoladores, setShowVoladores] = useState(false);
@@ -26,14 +27,19 @@ export default function DonYeyoHi() {
   //Estados para manejar los productos de los roedores
   const [showProductosRoedores, setShowProductosRoedores] = useState(false); // Estado para mostrar u ocultar los productos de los roedores
   const [productosRoedoresData, setProductosRoedoresData] = useState([]); // Estado para manejar los datos de los productos de los roedores
-
-  const [titulo, setTitulo] = useState("Planilla Don Yeyo H.I"); // Estado para manejar el título de la planilla
+  //Estados para manejar datos de la empresa
+  const [showEmpresa, setShowEmpresa] = useState(false); // Estado para mostrar u ocultar los datos de la empresa
+  const [empresaData, setEmpresaData] = useState([]); // Estado para manejar los datos de la empresa
+  
+  const [titulo, setTitulo] = useState("Nueva Planilla"); // Estado para manejar el título de la planilla
   //Función para mostrar u ocultar los voladores
   const DesplegarVoladores = () => {
     setShowVoladores((prev) => !prev); // Cambiar el estado de mostrar u ocultar los voladores
     setShowCaminadores(false); // Ocultar los caminadores cuando se despliegan los voladores
     setShowRoedores(false);
     setShowProductosRoedores(false);
+    setShowEmpresa(false);
+
     setTitulo("Voladores");
   };
   //Función para mostrar u ocultar los caminadores
@@ -42,6 +48,8 @@ export default function DonYeyoHi() {
     setShowVoladores(false);
     setShowRoedores(false);
     setShowProductosRoedores(false);
+    setShowEmpresa(false);
+
     setTitulo("Caminadores");
   };
   //Función para mostrar u ocultar los roedores
@@ -50,6 +58,7 @@ export default function DonYeyoHi() {
     setShowCaminadores(false);
     setShowVoladores(false);
     setShowProductosRoedores(false);
+    setShowEmpresa(false);
     setTitulo("Roedores");
   };
   //Función para mostrar u ocultar los productos de los roedores
@@ -58,7 +67,17 @@ export default function DonYeyoHi() {
     setShowCaminadores(false);
     setShowVoladores(false);
     setShowRoedores(false);
+    setShowEmpresa(false);
     setTitulo("Productos Roedores");
+  };
+  //Función para mostrar u ocultar los datos de la empresa
+  const DesplegarEmpresa = () => {
+    setShowEmpresa((prev) => !prev); // Cambiar el estado de mostrar u ocultar los datos de la empresa
+    setShowCaminadores(false);
+    setShowVoladores(false);
+    setShowRoedores(false);
+    setShowProductosRoedores(false);
+    setTitulo("Datos del Cliente");
   };
 
   return (
@@ -73,6 +92,12 @@ export default function DonYeyoHi() {
           <View
             style={{ flexDirection: "row", justifyContent: "space-around" }}
           >
+            <TouchableOpacity
+              style={styles.touchable}
+              onPress={DesplegarEmpresa}
+            >
+              <Text style={styles.textTouchable}>Cliente</Text>
+            </TouchableOpacity>
             <TouchableOpacity
               style={styles.touchable}
               onPress={DesplegarVoladores}
@@ -99,7 +124,14 @@ export default function DonYeyoHi() {
             </TouchableOpacity>
           </View>
         </ScrollView>
-
+        {/* Mostrar u ocultar los datos de la empresa */}
+        {showEmpresa && (
+          <Empresa
+            onClose={() => setShowEmpresa(false)}
+            empresaData={empresaData}
+            setEmpresaData={setEmpresaData}
+          />
+        )}
         {/* Mostrar u ocultar los voladores */}
         {showVoladores && (
           <Voladores

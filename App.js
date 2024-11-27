@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React from "react";
+import React, { useState } from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import {
   SafeAreaProvider,
@@ -9,19 +9,21 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
 //Importacion de pantallas
-import DonYeyoHi from "./pages/donyeyohiScreen";
+import GenerarPlanilla from "./pages/generarPlanilla";
 
 // Pantalla principal (Home)
 function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
       <Text style={styles.title}>San Agustín</Text>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() => navigation.navigate("DonYeyoHi")}
-      >
-        <Text style={styles.buttonText}>Ir a Don Yeyo H.I</Text>
-      </TouchableOpacity>
+      <View style={styles.containerButtons}>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("GenerarPlanilla")}
+        >
+          <Text style={styles.buttonText}>Nueva Planilla</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
@@ -35,7 +37,7 @@ function AppContent() {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Home">
         <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="DonYeyoHi" component={DonYeyoHi} />
+        <Stack.Screen name="GenerarPlanilla" component={GenerarPlanilla} />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -57,6 +59,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     padding: 20,
   },
+  containerButtons: {
+    flex: 1,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   title: {
     fontSize: 24,
     fontWeight: "bold",
@@ -66,6 +73,8 @@ const styles = StyleSheet.create({
     backgroundColor: "#4CAF50",
     padding: 15,
     borderRadius: 10,
+    height: 50,
+    margin: 10,
   },
   buttonText: {
     color: "#fff",

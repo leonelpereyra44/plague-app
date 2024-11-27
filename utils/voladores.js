@@ -55,11 +55,8 @@ export default function Voladores({
   const [selectedObservacionesVoladores, setSelectedObservacionesVoladores] =
     useState("");
 
-  // const [voladoresData, setVoladoresData] = useState([]); // Estado para manejar los datos de los voladores
-
   //Funciones para limpiar los campos
   const LimpiarVoladores = () => {
-    // Función para limpiar los campos de los voladores
     setSelectedUbicacionVoladores("");
     setSelectedUbicacionLabel("");
     setSelectedDensidadVoladores("");

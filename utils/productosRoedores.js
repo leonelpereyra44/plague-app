@@ -101,7 +101,7 @@ export default function ProductosRoedores({
           style={styles.input}
           value={selectedCertificado}
           onChangeText={setSelectedCertificado}
-          placeholder="Número de certificado"
+          placeholder="Número de lote o certificado"
         />
       </View>
       <View
@@ -161,7 +161,7 @@ export default function ProductosRoedores({
               Laboratorio
             </Text>
             <Text style={[styles.titledatoscajas, styles.column]}>
-              Certificado
+              N° Lote/Certificado
             </Text>
           </View>
           {productosRoedoresData.map((entry, index) => (
