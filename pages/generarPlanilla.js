@@ -12,6 +12,7 @@ import Caminadores from "../utils/caminadores"; // Importamos el componente Cami
 import Roedores from "../utils/roedores"; // Importamos el componente Roedores
 import ProductosRoedores from "../utils/productosRoedores"; // Importamos el componente ProductosRoedores
 import Empresa from "../utils/empresa"; // Importamos el componente Empresa
+import Exportar from "../utils/exportar"; // Importamos el componente Exportar
 
 export default function GenerarPlanilla() {
   const insets = useSafeAreaInsets();
@@ -30,8 +31,12 @@ export default function GenerarPlanilla() {
   //Estados para manejar datos de la empresa
   const [showEmpresa, setShowEmpresa] = useState(false); // Estado para mostrar u ocultar los datos de la empresa
   const [empresaData, setEmpresaData] = useState([]); // Estado para manejar los datos de la empresa
-  
+  //Estados para manejar la exportación a Excel
+  const [showExportar, setShowExportar] = useState(false); // Estado para mostrar u ocultar los datos de la empresa
+  const [exportarData, setExportarData] = useState([]); // Estado para manejar los datos de la empresa
+
   const [titulo, setTitulo] = useState("Nueva Planilla"); // Estado para manejar el título de la planilla
+
   //Función para mostrar u ocultar los voladores
   const DesplegarVoladores = () => {
     setShowVoladores((prev) => !prev); // Cambiar el estado de mostrar u ocultar los voladores
@@ -39,7 +44,7 @@ export default function GenerarPlanilla() {
     setShowRoedores(false);
     setShowProductosRoedores(false);
     setShowEmpresa(false);
-
+    setShowExportar(false);
     setTitulo("Voladores");
   };
   //Función para mostrar u ocultar los caminadores
@@ -49,7 +54,7 @@ export default function GenerarPlanilla() {
     setShowRoedores(false);
     setShowProductosRoedores(false);
     setShowEmpresa(false);
-
+    setShowExportar(false);
     setTitulo("Caminadores");
   };
   //Función para mostrar u ocultar los roedores
@@ -59,6 +64,7 @@ export default function GenerarPlanilla() {
     setShowVoladores(false);
     setShowProductosRoedores(false);
     setShowEmpresa(false);
+    setShowExportar(false);
     setTitulo("Roedores");
   };
   //Función para mostrar u ocultar los productos de los roedores
@@ -68,11 +74,23 @@ export default function GenerarPlanilla() {
     setShowVoladores(false);
     setShowRoedores(false);
     setShowEmpresa(false);
+    setShowExportar(false);
     setTitulo("Productos Roedores");
   };
   //Función para mostrar u ocultar los datos de la empresa
   const DesplegarEmpresa = () => {
     setShowEmpresa((prev) => !prev); // Cambiar el estado de mostrar u ocultar los datos de la empresa
+    setShowCaminadores(false);
+    setShowVoladores(false);
+    setShowRoedores(false);
+    setShowProductosRoedores(false);
+    setShowExportar(false);
+    setTitulo("Datos del Cliente");
+  };
+
+  const DesplegarExportar = () => {
+    setShowExportar((prev) => !prev); // Cambiar el estado de mostrar u ocultar los datos de la empresa
+    setShowEmpresa(false);
     setShowCaminadores(false);
     setShowVoladores(false);
     setShowRoedores(false);
@@ -122,6 +140,12 @@ export default function GenerarPlanilla() {
             >
               <Text style={styles.textTouchable}>Productos</Text>
             </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.touchable}
+              onPress={DesplegarExportar}
+            >
+              <Text style={styles.textTouchable}>Exportar a Excel</Text>
+            </TouchableOpacity>
           </View>
         </ScrollView>
         {/* Mostrar u ocultar los datos de la empresa */}
@@ -162,6 +186,19 @@ export default function GenerarPlanilla() {
             onClose={() => setShowProductosRoedores(false)}
             productosRoedoresData={productosRoedoresData}
             setProductosRoedoresData={setProductosRoedoresData}
+          />
+        )}
+        {/* Mostrar u ocultar la exportación a Excel */}
+        {showExportar && (
+          <Exportar
+            onClose={() => setShowExportar(false)}
+            exportarData={exportarData}
+            setExportarData={setExportarData}
+            voladoresData={voladoresData}
+            caminadoresData={caminadoresData}
+            roedoresData={roedoresData}
+            productosRoedoresData={productosRoedoresData}
+            empresaData={empresaData}
           />
         )}
       </View>

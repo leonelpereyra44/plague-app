@@ -144,8 +144,7 @@ export default function Caminadores({
                 !selectedProductoCaminadores ||
                 !selectedPrincipioActivoCaminadores ||
                 !selectedLaboratorioCaminadores ||
-                !aprobacionSenasa ||
-                !observacionesCaminadores
+                !aprobacionSenasa
               ) {
                 alert("Por favor, complete todos los campos");
                 return;

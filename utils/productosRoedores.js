@@ -117,8 +117,7 @@ export default function ProductosRoedores({
             if (
               !selectedProductoUtilizado ||
               !selectedPrincipioActivo ||
-              !selectedLaboratorio ||
-              !selectedCertificado
+              !selectedLaboratorio
             ) {
               alert("Por favor, complete todos los campos");
               return;
