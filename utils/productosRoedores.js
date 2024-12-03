@@ -5,9 +5,8 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
-  TextInput,
 } from "react-native";
-import { Dropdown } from "react-native-element-dropdown"; // Usamos Dropdown directamente.
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function ProductosRoedores({
   onClose,
@@ -15,95 +14,142 @@ export default function ProductosRoedores({
   setProductosRoedoresData,
 }) {
   const productos = [
-    { label: "Raticida", value: "Raticida" },
-    { label: "Trampa", value: "Trampa" },
-    { label: "Cebo", value: "Cebo" },
-    { label: "Jaula", value: "Jaula" },
-    { label: "Veneno", value: "Veneno" },
-    { label: "Otro", value: "Otro" },
+    {
+      producto: "CEBO RATOP BLOQUES",
+      principioActivo: "BROMADIOLONE",
+      laboratorio: "GLEBA S.A",
+      certificado: "C.S-2611 / C.A-0250006",
+    },
+    {
+      producto: "CEBO STORM BLOQUES",
+      principioActivo: "FLOCOUMAFEN",
+      laboratorio: "BAFS",
+      certificado: "C.S-2617 / C.A-0680003",
+    },
+    {
+      producto: "GLEXRAT GRANO",
+      principioActivo: "BROMADIOLONE",
+      laboratorio: "GLEBA S.A",
+      certificado: "C.S-872 / C.A-0250003",
+    },
+    {
+      producto: "PANIC ALMENDRA BLOQUE",
+      principioActivo: "BRODIFACOUM",
+      laboratorio: "PANIC",
+      certificado: "C.S-2334 / C.A-0250019",
+    },
+    {
+      producto: "HUAGRO RAT PELLETS",
+      principioActivo: "BROMADIOLONE",
+      laboratorio: "HUAGRO",
+      certificado: "C.A-0250003",
+    },
+    {
+      producto: "PEGARAT PARA RATAS",
+      principioActivo: "PEGAMENTO",
+      laboratorio: "SUPRABOND",
+      certificado: "NO TOXICAS",
+    },
+    {
+      producto: "ROETRAP",
+      principioActivo: "PEGAMENTO",
+      laboratorio: "ECO-WORLD",
+      certificado: "NO TOXICAS",
+    },
   ];
 
-  const principiosActivos = [
-    { label: "Bromadiolona", value: "Bromadiolona" },
-    { label: "Brodifacoum", value: "Brodifacoum" },
-    { label: "Difenacoum", value: "Difenacoum" },
-    { label: "Difethialona", value: "Difethialona" },
-    { label: "Flocoumafen", value: "Flocoumafen" },
-    { label: "Warfarina", value: "Warfarina" },
-    { label: "Otro", value: "Otro" },
-  ];
-
-  const laboratorios = [
-    { label: "Bayer", value: "Bayer" },
-    { label: "Basf", value: "Basf" },
-    { label: "Syngenta", value: "Syngenta" },
-    { label: "FMC", value: "FMC" },
-    { label: "Otro", value: "Otro" },
-  ];
-
-  const [selectedProductoUtilizado, setSelectedProductoUtilizado] =
-    useState("");
-  const [selectedPrincipioActivo, setSelectedPrincipioActivo] = useState(""); // Estado para manejar el principio activo
-  const [selectedLaboratorio, setSelectedLaboratorio] = useState(""); // Estado para manejar el laboratorio
-  const [selectedCertificado, setSelectedCertificado] = useState(""); // Estado para manejar el número de certificado
+  const [selectedProducto, setSelectedProducto] = useState("");
+  const [selectedPrincipioActivo, setSelectedPrincipioActivo] = useState("");
+  const [selectedLaboratorio, setSelectedLaboratorio] = useState("");
+  const [selectedCertificado, setSelectedCertificado] = useState("");
 
   const LimpiarProductos = () => {
-    setSelectedProductoUtilizado("");
+    setSelectedProducto("");
     setSelectedPrincipioActivo("");
     setSelectedLaboratorio("");
     setSelectedCertificado("");
   };
+
+  const handleProductoChange = (item) => {
+    setSelectedProducto(item.value);
+    const productoSeleccionado = productos.find(
+      (p) => p.producto === item.value,
+    );
+    if (productoSeleccionado) {
+      setSelectedPrincipioActivo(productoSeleccionado.principioActivo);
+      setSelectedLaboratorio(productoSeleccionado.laboratorio);
+      setSelectedCertificado(productoSeleccionado.certificado);
+    } else {
+      LimpiarProductos();
+    }
+  };
+
   return (
     <ScrollView>
       <View style={styles.productosContainer}>
+        {/* Producto */}
         <Dropdown
-          data={productos}
+          data={productos.map((p) => ({
+            label: p.producto,
+            value: p.producto,
+          }))}
           maxHeight={200}
           labelField="label"
           valueField="value"
-          value={selectedProductoUtilizado}
+          value={selectedProducto}
           placeholder="Producto utilizado:"
-          onChange={(item) => {
-            setSelectedProductoUtilizado(item.value);
-          }}
+          onChange={handleProductoChange}
           style={styles.dropdown}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
         />
+
+        {/* Principio Activo */}
         <Dropdown
-          data={principiosActivos}
+          data={[
+            { label: selectedPrincipioActivo, value: selectedPrincipioActivo },
+          ]}
           maxHeight={200}
           labelField="label"
+          valueField="value"
           value={selectedPrincipioActivo}
-          valueField="value"
           placeholder="Principio activo:"
-          onChange={(item) => setSelectedPrincipioActivo(item.value)}
+          disabled={true}
           style={styles.dropdown}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
         />
+
+        {/* Laboratorio */}
         <Dropdown
-          data={laboratorios}
+          data={[{ label: selectedLaboratorio, value: selectedLaboratorio }]}
           maxHeight={200}
           labelField="label"
-          value={selectedLaboratorio}
           valueField="value"
+          value={selectedLaboratorio}
           placeholder="Laboratorio:"
-          onChange={(item) => setSelectedLaboratorio(item.value)}
+          disabled={true}
           style={styles.dropdown}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
-          inputSearchStyle={styles.inputSearchStyle}
         />
-        <TextInput
-          style={styles.input}
+
+        {/* Certificado */}
+        <Dropdown
+          data={[{ label: selectedCertificado, value: selectedCertificado }]}
+          maxHeight={200}
+          labelField="label"
+          valueField="value"
           value={selectedCertificado}
-          onChangeText={setSelectedCertificado}
-          placeholder="Número de lote o certificado"
+          placeholder="Certificado:"
+          disabled={true}
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
         />
       </View>
+
+      {/* Botones */}
       <View
         style={{
           flexDirection: "row",
@@ -112,41 +158,51 @@ export default function ProductosRoedores({
         }}
       >
         <TouchableOpacity
-          style={styles.touchable}
+          style={styles.button}
           onPress={() => {
             if (
-              !selectedProductoUtilizado ||
+              !selectedProducto ||
               !selectedPrincipioActivo ||
-              !selectedLaboratorio
+              !selectedLaboratorio ||
+              !selectedCertificado
             ) {
               alert("Por favor, complete todos los campos");
               return;
-            } else {
-              const newEntry = {
-                producto: selectedProductoUtilizado,
-                principioActivo: selectedPrincipioActivo,
-                laboratorio: selectedLaboratorio,
-                certificado: selectedCertificado,
-              };
-              setProductosRoedoresData((prev) => [...prev, newEntry]); // Agrega el nuevo registro
-              //Resetea los campos
-              LimpiarProductos();
             }
+
+            const newEntry = {
+              Producto: selectedProducto,
+              PrincipioActivo: selectedPrincipioActivo,
+              Laboratorio: selectedLaboratorio,
+              Certificado: selectedCertificado,
+            };
+
+            setProductosRoedoresData((prev) => [...prev, newEntry]);
+            LimpiarProductos();
             alert("Datos guardados correctamente");
           }}
         >
-          <Text>Agregar</Text>
+          <Text style={styles.buttonText}>Agregar</Text>
         </TouchableOpacity>
+
         <TouchableOpacity
-          style={styles.touchable}
+          style={styles.buttonSecondary}
           onPress={() => {
-            onClose();
+            if (productosRoedoresData.length > 0) {
+              // Eliminar el último registro de los datos
+              setProductosRoedoresData((prev) => prev.slice(0, -1));
+              alert("Último registro eliminado");
+            } else {
+              alert("No hay registros para eliminar");
+            }
             LimpiarProductos();
           }}
         >
-          <Text>Cerrar</Text>
+          <Text style={styles.buttonText}>Eliminar</Text>
         </TouchableOpacity>
       </View>
+
+      {/* Tabla de datos */}
       {productosRoedoresData.length > 0 && (
         <View style={styles.spreadsheet}>
           <View style={[styles.containerData, styles.headerData]}>
@@ -160,22 +216,22 @@ export default function ProductosRoedores({
               Laboratorio
             </Text>
             <Text style={[styles.titledatoscajas, styles.column]}>
-              N° Lote/Certificado
+              Certificado
             </Text>
           </View>
           {productosRoedoresData.map((entry, index) => (
             <View style={styles.containerData} key={index}>
               <Text style={[styles.datoscajas, styles.column]}>
-                {entry.producto}
+                {entry.Producto}
               </Text>
               <Text style={[styles.datoscajas, styles.column]}>
-                {entry.principioActivo}
+                {entry.PrincipioActivo}
               </Text>
               <Text style={[styles.datoscajas, styles.column]}>
-                {entry.laboratorio}
+                {entry.Laboratorio}
               </Text>
               <Text style={[styles.datoscajas, styles.column]}>
-                {entry.certificado}
+                {entry.Certificado}
               </Text>
             </View>
           ))}
@@ -186,72 +242,130 @@ export default function ProductosRoedores({
 }
 
 const styles = StyleSheet.create({
-  touchable: {
-    margin: 8,
-    padding: 10,
-    backgroundColor: "lightgreen",
-    borderRadius: 20,
-  },
   productosContainer: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-around",
-    gap: 20, // Ajusta el espacio para evitar solapamientos
-    paddingVertical: 16,
-    backgroundColor: "#fff", // Fondo visible
+    justifyContent: "space-between",
+    gap: 20,
+    padding: 16,
+    backgroundColor: "#F5F5F5", // Fondo gris claro
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2, // Sombra ligera
+  },
+  containerAgregar: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginTop: 20,
   },
   dropdown: {
     height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
+    borderColor: "#ddd",
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#FFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2, // Sombra para Android
   },
   placeholderStyle: {
     fontSize: 16,
-    color: "gray",
+    color: "#aaa",
   },
   selectedTextStyle: {
     fontSize: 16,
-    color: "black",
+    color: "#333",
   },
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#ddd",
     padding: 10,
+    borderRadius: 8,
+    backgroundColor: "#FFF",
+    fontSize: 16,
+    color: "#333",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#28A745", // Verde para "Agregar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonSecondary: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#DC3545", // Rojo para "Cerrar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#FFF",
+    fontWeight: "bold",
   },
   spreadsheet: {
     marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    overflow: "hidden", // Evita que el contenido sobresalga
   },
   containerData: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc", // Línea divisoria para las filas
+    borderBottomColor: "#ddd",
+    backgroundColor: "#FFF",
   },
   headerData: {
-    backgroundColor: "#f0f0f0", // Fondo diferente para el encabezado
+    backgroundColor: "#007AFF",
     borderBottomWidth: 2,
-    borderBottomColor: "black", // Línea más gruesa para encabezados
+    borderBottomColor: "#005BB5",
   },
   titledatoscajas: {
     fontWeight: "bold",
-    fontSize: 10,
+    fontSize: 14,
     textAlign: "center",
+    color: "#FFF",
   },
-  datoscajas: {
-    fontSize: 10,
+  datosEmpresa: {
+    fontSize: 14,
     textAlign: "center",
+    color: "#333",
   },
   column: {
-    flex: 1, // Cada columna ocupa la misma proporción
+    flex: 1,
     textAlign: "center",
   },
 });

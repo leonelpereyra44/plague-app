@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   Text,
@@ -14,28 +14,85 @@ export default function Caminadores({
   caminadoresData,
   setCaminadoresData,
 }) {
-  const productoCaminadores = [
-    { label: "Producto 1", value: "Producto 1" },
-    { label: "Producto 2", value: "Producto 2" },
-    { label: "Producto 3", value: "Producto 3" },
-    { label: "Producto 4", value: "Producto 4" },
-    { label: "Producto 5", value: "Producto 5" },
-  ];
-
-  const principioActivoCaminadores = [
-    { label: "Principio Activo 1", value: "Principio Activo 1" },
-    { label: "Principio Activo 2", value: "Principio Activo 2" },
-    { label: "Principio Activo 3", value: "Principio Activo 3" },
-    { label: "Principio Activo 4", value: "Principio Activo 4" },
-    { label: "Principio Activo 5", value: "Principio Activo 5" },
-  ];
-
-  const laboratorioCaminadores = [
-    { label: "Laboratorio 1", value: "Laboratorio 1" },
-    { label: "Laboratorio 2", value: "Laboratorio 2" },
-    { label: "Laboratorio 3", value: "Laboratorio 3" },
-    { label: "Laboratorio 4", value: "Laboratorio 4" },
-    { label: "Laboratorio 5", value: "Laboratorio 5" },
+  const productos = [
+    {
+      producto: "CISLIN",
+      principioActivo: "DELTAMETRINA",
+      laboratorio: "BAYER, ENVU",
+      numeroCertificado: "C.A-250056",
+    },
+    {
+      producto: "PERFENO",
+      principioActivo: "Propoxur 20 %",
+      laboratorio: "CHEMOTECNICA",
+      numeroCertificado: "C.A-0250030",
+    },
+    {
+      producto: "PROTEGINAL",
+      principioActivo: "Cipermetrina 20 % emul",
+      laboratorio: "CHEMOTECNICA",
+      numeroCertificado: "C.S- 375 / C.A- 0250010",
+    },
+    {
+      producto: "CHEMONIL",
+      principioActivo: "Fipronil 2 %",
+      laboratorio: "CHEMOTECNICA",
+      numeroCertificado: "C.A-0250103",
+    },
+    {
+      producto: "DEMOLEDOR",
+      principioActivo: "Betacipermetrina + Lufenuron",
+      laboratorio: "CHEMOTECNICA",
+      numeroCertificado: "C.S-3250 / C.A-0250101",
+    },
+    {
+      producto: "ASI-NET",
+      principioActivo: "CIPERMETRINA 5% + BUTOXIDO DE PIPERONILO 15 %",
+      laboratorio: "CHEMOTECNICA",
+      numeroCertificado: "C-2907",
+    },
+    {
+      producto: "DEPE",
+      principioActivo: "Permetrina 10 % (80% Hcis)",
+      laboratorio: "CHEMOTECNICA",
+      numeroCertificado: "C.A-0250082",
+    },
+    {
+      producto: "K-OBIOL",
+      principioActivo: "DELTAMETRINA 2,5G/100ML",
+      laboratorio: "BAYER, ENVU",
+      numeroCertificado: "C.S- 30.997",
+    },
+    {
+      producto: "FENDONA 6 SC",
+      principioActivo: "ALFA-CIPERMETRINA 6%",
+      laboratorio: "BAYER, ENVU",
+      numeroCertificado: "C.S-0566 / C.A-0270002",
+    },
+    {
+      producto: "Formidor® CEBO",
+      principioActivo: "FIPRONIL 0,003%",
+      laboratorio: "BAYER, ENVU",
+      numeroCertificado: "C.S-00284",
+    },
+    {
+      producto: "GELTEK HORMIGAS",
+      principioActivo: "Imidacloprid 2,15%",
+      laboratorio: "GELTEK",
+      numeroCertificado: null,
+    },
+    {
+      producto: "DAST POLVO",
+      principioActivo: "Deltametrina 0,2%",
+      laboratorio: "GLEBA S.A",
+      numeroCertificado: "C.S- 0250016 /C.A- 0250016",
+    },
+    {
+      producto: "FLY HUNT-ATRAP. MOSCAS",
+      principioActivo: "ECOLOGICO- NO TOXICO",
+      laboratorio: "FLY HUNT",
+      numeroCertificado: "NO TOXICO",
+    },
   ];
 
   const [ubicacionCaminadores, setUbicacionCaminadores] = useState(""); // Estado para manejar el texto del input
@@ -47,18 +104,33 @@ export default function Caminadores({
   ] = useState("");
   const [selectedLaboratorioCaminadores, setSelectedLaboratorioCaminadores] =
     useState("");
-  const [aprobacionSenasa, setAprobacionSenasa] = useState("");
+  const [selectedCertificados, setSelectedCertificados] = useState("");
   const [observacionesCaminadores, setObservacionesCaminadores] = useState("");
 
   const LimpiarCaminadores = () => {
-    // Función para limpiar los campos de los caminadores
     setUbicacionCaminadores("");
     setSelectedProductoCaminadores("");
     setSelectedPrincipioActivoCaminadores("");
     setSelectedLaboratorioCaminadores("");
-    setAprobacionSenasa("");
+    setSelectedCertificados("");
     setObservacionesCaminadores("");
   };
+
+  // Se ejecuta cuando se selecciona un producto
+  useEffect(() => {
+    if (selectedProductoCaminadores) {
+      const productoSeleccionado = productos.find(
+        (producto) => producto.producto === selectedProductoCaminadores,
+      );
+      if (productoSeleccionado) {
+        setSelectedPrincipioActivoCaminadores(
+          productoSeleccionado.principioActivo,
+        );
+        setSelectedLaboratorioCaminadores(productoSeleccionado.laboratorio);
+        setSelectedCertificados(productoSeleccionado.numeroCertificado);
+      }
+    }
+  }, [selectedProductoCaminadores]);
 
   return (
     <ScrollView>
@@ -70,58 +142,66 @@ export default function Caminadores({
           placeholder="Ubicación:"
         />
         <Dropdown
-          data={productoCaminadores}
+          data={productos.map((producto) => ({
+            label: producto.producto,
+            value: producto.producto,
+          }))}
           search
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedProductoCaminadores} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedProductoCaminadores}
           placeholder="Producto utilizado:"
           onChange={(item) => {
-            setSelectedProductoCaminadores(item.value); // Cambiar el valor seleccionado
+            setSelectedProductoCaminadores(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
-          data={principioActivoCaminadores}
-          search
-          maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedPrincipioActivoCaminadores} // Valor actualmente seleccionado
+          data={[
+            {
+              label: selectedPrincipioActivoCaminadores,
+              value: selectedPrincipioActivoCaminadores,
+            },
+          ]}
+          search={false}
+          labelField="label"
+          valueField="value"
+          value={selectedPrincipioActivoCaminadores}
           placeholder="Principio Activo:"
-          onChange={(item) => {
-            setSelectedPrincipioActivoCaminadores(item.value); // Cambiar el valor seleccionado
-          }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
         />
         <Dropdown
-          data={laboratorioCaminadores}
-          search
-          maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedLaboratorioCaminadores} // Valor actualmente seleccionado
+          data={[
+            {
+              label: selectedLaboratorioCaminadores,
+              value: selectedLaboratorioCaminadores,
+            },
+          ]}
+          search={false}
+          labelField="label"
+          valueField="value"
+          value={selectedLaboratorioCaminadores}
           placeholder="Laboratorio:"
-          onChange={(item) => {
-            setSelectedLaboratorioCaminadores(item.value); // Cambiar el valor seleccionado
-          }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
         />
-        <TextInput
-          style={styles.input}
-          onChangeText={(value) => setAprobacionSenasa(value)}
-          value={aprobacionSenasa}
-          placeholder="Aprobación Senasa:"
+        <Dropdown
+          data={[{ label: selectedCertificados, value: selectedCertificados }]}
+          search={false}
+          labelField="label"
+          valueField="value"
+          value={selectedCertificados}
+          placeholder="Certificados:"
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
         />
         <TextInput
           style={styles.input}
@@ -137,43 +217,48 @@ export default function Caminadores({
           }}
         >
           <TouchableOpacity
-            style={styles.touchable}
+            style={styles.button}
             onPress={() => {
               if (
                 !ubicacionCaminadores ||
                 !selectedProductoCaminadores ||
                 !selectedPrincipioActivoCaminadores ||
                 !selectedLaboratorioCaminadores ||
-                !aprobacionSenasa
+                !selectedCertificados
               ) {
                 alert("Por favor, complete todos los campos");
                 return;
               } else {
                 const newEntry = {
-                  ubicacion: ubicacionCaminadores,
-                  producto: selectedProductoCaminadores,
-                  principioActivo: selectedPrincipioActivoCaminadores,
-                  laboratorio: selectedLaboratorioCaminadores,
-                  aprobacionSenasa: aprobacionSenasa,
-                  observaciones: observacionesCaminadores,
+                  Ubicación: ubicacionCaminadores,
+                  Producto: selectedProductoCaminadores,
+                  PrincipioActivo: selectedPrincipioActivoCaminadores,
+                  Laboratorio: selectedLaboratorioCaminadores,
+                  Certificados: selectedCertificados,
+                  Observaciones: observacionesCaminadores,
                 };
                 setCaminadoresData((prev) => [...prev, newEntry]); // Agrega el nuevo registro
-                //resetea los campos
                 LimpiarCaminadores();
               }
               alert("Datos guardados correctamente");
             }}
           >
-            <Text>Agregar</Text>
+            <Text style={styles.buttonText}>Agregar</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.touchable}
+            style={styles.buttonSecondary}
             onPress={() => {
-              onClose();
+              if (caminadoresData.length > 0) {
+                // Eliminar el último registro de los datos
+                setCaminadoresData((prev) => prev.slice(0, -1));
+                alert("Último registro eliminado");
+              } else {
+                alert("No hay registros para eliminar");
+              }
               LimpiarCaminadores();
             }}
           >
-            <Text>Cerrar</Text>
+            <Text style={styles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
         {caminadoresData.length > 0 && (
@@ -192,32 +277,20 @@ export default function Caminadores({
                 Laboratorio
               </Text>
               <Text style={[styles.titledatoscajas, styles.column]}>
-                Aprobación Senasa
+                Certificado
               </Text>
               <Text style={[styles.titledatoscajas, styles.column]}>
                 Observaciones
               </Text>
             </View>
-            {caminadoresData.map((entry, index) => (
-              <View style={styles.containerData} key={index}>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.ubicacion}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.producto}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.principioActivo}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.laboratorio}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.aprobacionSenasa}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.observaciones}
-                </Text>
+            {caminadoresData.map((data, index) => (
+              <View key={index} style={styles.containerData}>
+                <Text style={[styles.column]}>{data.Ubicación}</Text>
+                <Text style={[styles.column]}>{data.Producto}</Text>
+                <Text style={[styles.column]}>{data.PrincipioActivo}</Text>
+                <Text style={[styles.column]}>{data.Laboratorio}</Text>
+                <Text style={[styles.column]}>{data.Certificados}</Text>
+                <Text style={[styles.column]}>{data.Observaciones}</Text>
               </View>
             ))}
           </View>
@@ -227,72 +300,125 @@ export default function Caminadores({
   );
 }
 const styles = StyleSheet.create({
-  touchable: {
-    margin: 8,
-    padding: 10,
-    backgroundColor: "lightgreen",
-    borderRadius: 20,
-  },
   caminadoresContainer: {
     flex: 1,
     flexDirection: "column",
     justifyContent: "space-around",
     gap: 20,
     paddingVertical: 16,
-    backgroundColor: "#fff",
+    backgroundColor: "#F9F9F9",
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   dropdown: {
     height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
+    borderColor: "#B0BEC5",
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#FFFFFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
   },
   placeholderStyle: {
     fontSize: 16,
-    color: "gray",
+    color: "#90A4AE",
   },
   selectedTextStyle: {
     fontSize: 16,
-    color: "black",
+    color: "#263238",
   },
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#B0BEC5",
   },
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: "gray",
-    padding: 10,
+    borderColor: "#B0BEC5",
+    borderRadius: 8,
+    padding: 12,
+    backgroundColor: "#FFFFFF",
+    fontSize: 16,
+    color: "#263238",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#28A745", // Verde para "Agregar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonSecondary: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#DC3545", // Rojo para "Cerrar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#FFF",
+    fontWeight: "bold",
   },
   spreadsheet: {
     marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#B0BEC5",
+    borderRadius: 8,
+    overflow: "hidden",
   },
   containerData: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 5,
+    paddingVertical: 10,
+    paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc", // Línea divisoria para las filas
+    borderBottomColor: "#CFD8DC",
   },
   headerData: {
-    backgroundColor: "#f0f0f0", // Fondo diferente para el encabezado
+    backgroundColor: "#007AFF",
     borderBottomWidth: 2,
-    borderBottomColor: "#000", // Línea más gruesa para encabezados
+    borderBottomColor: "#005BB5",
   },
   titledatoscajas: {
     fontWeight: "bold",
     fontSize: 10,
     textAlign: "center",
+    color: "#FFF",
   },
   datoscajas: {
     fontSize: 10,
     textAlign: "center",
+    color: "#37474F",
   },
   column: {
-    flex: 1, // Cada columna ocupa la misma proporción
+    flex: 1,
     textAlign: "center",
   },
 });

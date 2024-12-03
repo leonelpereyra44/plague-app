@@ -26,8 +26,10 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
   ];
 
   const tipoTrampa = [
-    { label: "A", value: "a" },
-    { label: "B", value: "b" },
+    { label: "Pega", value: "Pega" },
+    { label: "Trampa", value: "Trampa" },
+    { label: "Cebo", value: "Cebo" },
+    { label: "Otra", value: "Otra" },
   ];
 
   const consumoCebos = [
@@ -105,7 +107,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           labelField="label" // Define la clave que contiene el texto visible
           valueField="value" // Define la clave que contiene el valor interno
           value={selectedTipoTrampa} // Valor actualmente seleccionado
-          placeholder="Trampa PEGA/TRAMPA: A/B"
+          placeholder="Trampa:"
           onChange={(item) => {
             setSelectedTipoTrampa(item.value); // Cambiar el valor seleccionado
           }}
@@ -168,7 +170,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           }}
         >
           <TouchableOpacity
-            style={styles.touchable}
+            style={styles.button}
             onPress={() => {
               if (
                 !cajaRoedores ||
@@ -181,34 +183,48 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
               ) {
                 alert("Por favor, complete todos los campos");
                 return;
-              } else {
-                const newEntry = {
-                  caja: cajaRoedores,
-                  vivos: selectedRoedoresVivos,
-                  muertos: selectedRoedoresMuertos,
-                  tipoTrampa: selectedTipoTrampa,
-                  materiaFecal: selectedMateriaFecal,
-                  consumoCebos: selectedConsumoCebos,
-                  reposicion: selectedReposicionRoedores,
-                };
-                setRoedoresData((prev) => [...prev, newEntry]); // Agrega el nuevo registro
-                // Resetea los campos
-                LimpiarRoedores();
               }
-              alert("Datos guardados con exito");
+
+              // Crear una nueva entrada
+              const newEntry = {
+                Caja: parseInt(cajaRoedores, 10), // Convertir a número para ordenar correctamente
+                Vivos: selectedRoedoresVivos,
+                Muertos: selectedRoedoresMuertos,
+                TipoTrampa: selectedTipoTrampa,
+                MateriaFecal: selectedMateriaFecal,
+                ConsumoCebos: selectedConsumoCebos,
+                Reposición: selectedReposicionRoedores,
+              };
+
+              // Actualizar y ordenar los datos
+              setRoedoresData((prevData) => {
+                const updatedData = [...prevData, newEntry];
+                updatedData.sort((a, b) => a.Caja - b.Caja); // Ordenar por "caja" de forma ascendente
+                return updatedData;
+              });
+
+              // Limpiar los campos del formulario
+              LimpiarRoedores();
+              alert("Datos guardados con éxito");
             }}
           >
-            <Text>Agregar</Text>
+            <Text style={styles.buttonText}>Agregar</Text>
           </TouchableOpacity>
 
           <TouchableOpacity
-            style={styles.touchable}
+            style={styles.buttonSecondary}
             onPress={() => {
-              onClose(); // Cerrar el componente
+              if (roedoresData.length > 0) {
+                // Eliminar el último registro de los datos
+                setRoedoresData((prev) => prev.slice(0, -1));
+                alert("Último registro eliminado");
+              } else {
+                alert("No hay registros para eliminar");
+              }
               LimpiarRoedores();
             }}
           >
-            <Text>Cerrar</Text>
+            <Text style={styles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
         {roedoresData.length > 0 && (
@@ -234,22 +250,22 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             {roedoresData.map((entry, index) => (
               <View style={styles.containerData} key={index}>
                 <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.caja}
+                  {entry.Caja}
                 </Text>
                 <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.vivos}
+                  {entry.Vivos}
                 </Text>
                 <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.muertos}
+                  {entry.Muertos}
                 </Text>
                 <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.tipoTrampa}
+                  {entry.TipoTrampa}
                 </Text>
                 <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.consumoCebos}
+                  {entry.ConsumoCebos}
                 </Text>
                 <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.reposicion}
+                  {entry.Reposición}
                 </Text>
               </View>
             ))}
@@ -261,75 +277,129 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
 }
 
 const styles = StyleSheet.create({
-  touchable: {
-    margin: 8,
-    padding: 10,
-    backgroundColor: "lightgreen",
-    borderRadius: 20,
-  },
-  textTouchable: {
-    fontSize: 16,
-    fontWeight: "bold",
-  },
   roedoresContainer: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-around",
+    justifyContent: "space-between",
     gap: 20,
     paddingVertical: 16,
+    backgroundColor: "#F5F5F5", // Fondo gris claro
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  containerAgregar: {
+    flexDirection: "row",
+    justifyContent: "space-evenly",
+    marginTop: 20,
   },
   dropdown: {
     height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
+    borderColor: "#ddd",
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#FFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2, // Sombra para Android
   },
   placeholderStyle: {
     fontSize: 16,
-    color: "gray",
+    color: "#aaa",
   },
   selectedTextStyle: {
     fontSize: 16,
-    color: "black",
+    color: "#333",
   },
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#ddd",
     padding: 10,
+    borderRadius: 8,
+    backgroundColor: "#FFF",
+    fontSize: 16,
+    color: "#333",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#28A745", // Verde para "Agregar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonSecondary: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#DC3545", // Rojo para "Cerrar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#FFF",
+    fontWeight: "bold",
   },
   spreadsheet: {
     marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    overflow: "hidden", // Evita que el contenido sobresalga
   },
   containerData: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc", // Línea divisoria para las filas
+    borderBottomColor: "#ddd",
+    backgroundColor: "#FFF",
   },
   headerData: {
-    backgroundColor: "#f0f0f0", // Fondo diferente para el encabezado
+    backgroundColor: "#007AFF",
     borderBottomWidth: 2,
-    borderBottomColor: "#000", // Línea más gruesa para encabezados
+    borderBottomColor: "#005BB5",
   },
   titledatoscajas: {
     fontWeight: "bold",
     fontSize: 10,
     textAlign: "center",
+    color: "#FFF",
   },
-  datoscajas: {
+  datosEmpresa: {
     fontSize: 10,
     textAlign: "center",
+    color: "#333",
   },
   column: {
-    flex: 1, // Cada columna ocupa la misma proporción
+    flex: 1,
     textAlign: "center",
   },
 });

@@ -21,6 +21,7 @@ export default function Empresa({ onClose, empresaData, setEmpresaData }) {
   const plantas = [
     { label: "Hipolito Yrigoyen", value: "Hipolito Yrigoyen" },
     { label: "Elguea Roman", value: "Elguea Roman" },
+    { label: "Pellegrini", value: "Pellegrini" },
   ];
 
   const [selectedEmpresa, setSelectedEmpresa] = useState("");
@@ -48,9 +49,9 @@ export default function Empresa({ onClose, empresaData, setEmpresaData }) {
       return;
     } else {
       const newEntry = {
-        cliente: selectedEmpresa,
-        planta: selectedPlantaEmpresa,
-        fecha: fechaDelDia,
+        Cliente: selectedEmpresa,
+        Planta: selectedPlantaEmpresa,
+        Fecha: fechaDelDia,
       };
       setEmpresaData((prev) => [...prev, newEntry]); // Agrega el nuevo registro
 
@@ -116,17 +117,23 @@ export default function Empresa({ onClose, empresaData, setEmpresaData }) {
         )}
 
         <View style={styles.containerAgregar}>
-          <TouchableOpacity style={styles.touchable} onPress={handleAdd}>
-            <Text>Agregar</Text>
+          <TouchableOpacity style={styles.button} onPress={handleAdd}>
+            <Text style={styles.buttonText}>Agregar</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.touchable}
+            style={styles.buttonSecondary}
             onPress={() => {
-              onClose();
+              if (empresaData.length > 0) {
+                // Eliminar el último registro de los datos
+                setEmpresaData((prev) => prev.slice(0, -1));
+                alert("Último registro eliminado");
+              } else {
+                alert("No hay registros para eliminar");
+              }
               LimpiarEmpresa();
             }}
           >
-            <Text>Cerrar</Text>
+            <Text style={styles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
         {empresaData.length > 0 && (
@@ -143,13 +150,13 @@ export default function Empresa({ onClose, empresaData, setEmpresaData }) {
             {empresaData.map((entry, index) => (
               <View style={styles.containerData} key={index}>
                 <Text style={[styles.datosEmpresa, styles.column]}>
-                  {entry.cliente}
+                  {entry.Cliente}
                 </Text>
                 <Text style={[styles.datosEmpresa, styles.column]}>
-                  {entry.planta}
+                  {entry.Planta}
                 </Text>
                 <Text style={[styles.datosEmpresa, styles.column]}>
-                  {entry.fecha}
+                  {entry.Fecha}
                 </Text>
               </View>
             ))}
@@ -161,77 +168,130 @@ export default function Empresa({ onClose, empresaData, setEmpresaData }) {
 }
 
 const styles = StyleSheet.create({
-  touchable: {
-    margin: 8,
-    padding: 10,
-    backgroundColor: "lightgreen",
-    borderRadius: 20,
-  },
   empresaContainer: {
     flex: 1,
     flexDirection: "column",
-    justifyContent: "space-around",
-    gap: 20, // Ajusta el espacio para evitar solapamientos
+    justifyContent: "space-between",
+    gap: 20,
     paddingVertical: 16,
-    backgroundColor: "#fff", // Fondo visible
+    backgroundColor: "#F5F5F5", // Fondo gris claro
+    borderRadius: 12,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2, // Sombra ligera
   },
   containerAgregar: {
     flexDirection: "row",
-    justifyContent: "space-around",
+    justifyContent: "space-evenly",
     marginTop: 20,
   },
   dropdown: {
     height: 50,
-    borderColor: "gray",
-    borderWidth: 0.5,
+    borderColor: "#ddd",
+    borderWidth: 1,
     borderRadius: 8,
-    paddingHorizontal: 8,
+    paddingHorizontal: 12,
+    backgroundColor: "#FFF",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2, // Sombra para Android
   },
   placeholderStyle: {
     fontSize: 16,
-    color: "gray",
+    color: "#aaa",
   },
   selectedTextStyle: {
     fontSize: 16,
-    color: "black",
+    color: "#333",
   },
   inputSearchStyle: {
     height: 40,
     fontSize: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: "#ddd",
   },
   input: {
     height: 50,
     borderWidth: 1,
-    borderColor: "gray",
+    borderColor: "#ddd",
     padding: 10,
+    borderRadius: 8,
+    backgroundColor: "#FFF",
+    fontSize: 16,
+    color: "#333",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+  },
+  button: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#28A745", // Verde para "Agregar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonSecondary: {
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    borderRadius: 10,
+    backgroundColor: "#DC3545", // Rojo para "Cerrar"
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 16,
+    color: "#FFF",
+    fontWeight: "bold",
   },
   spreadsheet: {
     marginTop: 20,
+    borderWidth: 1,
+    borderColor: "#ddd",
+    borderRadius: 8,
+    overflow: "hidden", // Evita que el contenido sobresalga
   },
   containerData: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    paddingVertical: 5,
+    paddingVertical: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "#ccc", // Línea divisoria para las filas
+    borderBottomColor: "#ddd",
+    backgroundColor: "#FFF",
   },
   headerData: {
-    backgroundColor: "#f0f0f0", // Fondo diferente para el encabezado
+    backgroundColor: "#007AFF",
     borderBottomWidth: 2,
-    borderBottomColor: "black", // Línea más gruesa para encabezados
+    borderBottomColor: "#005BB5",
   },
   titledatoscajas: {
     fontWeight: "bold",
     fontSize: 10,
     textAlign: "center",
+    color: "#FFF",
   },
-  datoscajas: {
+  datosEmpresa: {
     fontSize: 10,
     textAlign: "center",
+    color: "#333",
   },
   column: {
-    flex: 1, // Cada columna ocupa la misma proporción
+    flex: 1,
     textAlign: "center",
   },
 });
