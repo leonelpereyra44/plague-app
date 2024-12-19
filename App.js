@@ -1,5 +1,5 @@
 import "react-native-gesture-handler";
-import React, { useState } from "react";
+import React from "react";
 import {
   StyleSheet,
   Text,
@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   PixelRatio,
-  StatusBar
+  StatusBar,
 } from "react-native";
 import {
   SafeAreaProvider,
@@ -16,8 +16,12 @@ import {
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 
-//Importación de pantallas
+// Importación de pantallas
 import GenerarPlanilla from "./pages/generarPlanilla";
+import Clientes from "./pages/clientes";
+
+// Importa el DataProvider
+import { DataProvider } from "./utils/DataContext";
 
 // Obtener dimensiones de la pantalla
 const { width, height } = Dimensions.get("window");
@@ -38,6 +42,14 @@ function HomeScreen({ navigation }) {
           accessibilityLabel="Nueva Planilla"
         >
           <Text style={styles.buttonText}>Nueva Planilla</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("Clientes")}
+          accessible
+          accessibilityLabel="Clientes"
+        >
+          <Text style={styles.buttonText}>Clientes</Text>
         </TouchableOpacity>
       </View>
     </View>
@@ -67,6 +79,14 @@ function AppContent() {
             headerTitleStyle: styles.headerTitle,
           }}
         />
+        <Stack.Screen
+          name="Clientes"
+          component={Clientes}
+          options={{
+            headerStyle: styles.header,
+            headerTitleStyle: styles.headerTitle,
+          }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -75,33 +95,35 @@ function AppContent() {
 export default function App() {
   return (
     <SafeAreaProvider>
-      <StatusBar barStyle="dark-content" backgroundColor="#f9f9f9" />
-      <AppContent />
+      <StatusBar barStyle="light-content" backgroundColor="#2C3E50" />
+      {/* Envolver la aplicación con DataProvider */}
+      <DataProvider>
+        <AppContent />
+      </DataProvider>
     </SafeAreaProvider>
   );
 }
 
-// Estilos accesibles
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
     padding: 20,
-    backgroundColor: "#f9f9f9", // Fondo claro para destacar el texto
+    backgroundColor: "#1b3b4f", // Fondo similar al del logo
   },
   containerButtons: {
     flex: 1,
-    flexDirection: "row",
-    justifyContent: "space-around",
+    flexDirection: "column",
+    justifyContent: "center",
+    gap: 20,
     alignItems: "center",
-    marginTop: 30,
   },
   title: {
     fontSize: scaleFont(36), // Tamaño más grande
     fontWeight: "bold",
     marginTop: 40, // Espaciado extra para separar el texto de los botones
-    color: "#2E86C1", // Color azul elegante
+    color: "#ffffff", // Color blanco para el texto
     textAlign: "center",
     textTransform: "uppercase", // Todo en mayúsculas
     borderBottomWidth: 2, // Línea decorativa
@@ -111,11 +133,11 @@ const styles = StyleSheet.create({
   button: {
     backgroundColor: "#4CAF50",
     paddingVertical: height * 0.02,
-    paddingHorizontal: width * 0.2,
     borderRadius: 15,
     margin: 10,
     alignItems: "center",
     justifyContent: "center",
+    width: width * 0.6, // Ancho fijo para todos los botones
   },
   buttonText: {
     color: "#fff",
@@ -132,6 +154,3 @@ const styles = StyleSheet.create({
     color: "#fff",
   },
 });
-
-
-

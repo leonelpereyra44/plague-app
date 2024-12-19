@@ -14,146 +14,50 @@ export default function Caminadores({
   caminadoresData,
   setCaminadoresData,
 }) {
-  const productos = [
-    {
-      producto: "CISLIN",
-      principioActivo: "DELTAMETRINA",
-      laboratorio: "BAYER, ENVU",
-      numeroCertificado: "C.A-250056",
-    },
-    {
-      producto: "PERFENO",
-      principioActivo: "Propoxur 20 %",
-      laboratorio: "CHEMOTECNICA",
-      numeroCertificado: "C.A-0250030",
-    },
-    {
-      producto: "PROTEGINAL",
-      principioActivo: "Cipermetrina 20 % emul",
-      laboratorio: "CHEMOTECNICA",
-      numeroCertificado: "C.S- 375 / C.A- 0250010",
-    },
-    {
-      producto: "CHEMONIL",
-      principioActivo: "Fipronil 2 %",
-      laboratorio: "CHEMOTECNICA",
-      numeroCertificado: "C.A-0250103",
-    },
-    {
-      producto: "DEMOLEDOR",
-      principioActivo: "Betacipermetrina + Lufenuron",
-      laboratorio: "CHEMOTECNICA",
-      numeroCertificado: "C.S-3250 / C.A-0250101",
-    },
-    {
-      producto: "ASI-NET",
-      principioActivo: "CIPERMETRINA 5% + BUTOXIDO DE PIPERONILO 15 %",
-      laboratorio: "CHEMOTECNICA",
-      numeroCertificado: "C-2907",
-    },
-    {
-      producto: "DEPE",
-      principioActivo: "Permetrina 10 % (80% Hcis)",
-      laboratorio: "CHEMOTECNICA",
-      numeroCertificado: "C.A-0250082",
-    },
-    {
-      producto: "K-OBIOL",
-      principioActivo: "DELTAMETRINA 2,5G/100ML",
-      laboratorio: "BAYER, ENVU",
-      numeroCertificado: "C.S- 30.997",
-    },
-    {
-      producto: "FENDONA 6 SC",
-      principioActivo: "ALFA-CIPERMETRINA 6%",
-      laboratorio: "BAYER, ENVU",
-      numeroCertificado: "C.S-0566 / C.A-0270002",
-    },
-    {
-      producto: "Formidor® CEBO",
-      principioActivo: "FIPRONIL 0,003%",
-      laboratorio: "BAYER, ENVU",
-      numeroCertificado: "C.S-00284",
-    },
-    {
-      producto: "GELTEK HORMIGAS",
-      principioActivo: "Imidacloprid 2,15%",
-      laboratorio: "GELTEK",
-      numeroCertificado: null,
-    },
-    {
-      producto: "DAST POLVO",
-      principioActivo: "Deltametrina 0,2%",
-      laboratorio: "GLEBA S.A",
-      numeroCertificado: "C.S- 0250016 /C.A- 0250016",
-    },
-    {
-      producto: "FLY HUNT-ATRAP. MOSCAS",
-      principioActivo: "ECOLOGICO- NO TOXICO",
-      laboratorio: "FLY HUNT",
-      numeroCertificado: "NO TOXICO",
-    },
+  const densidad = [
+    { label: "Baja", value: "baja" },
+    { label: "Media", value: "media" },
+    { label: "Alta", value: "alta" },
   ];
 
-  const [ubicacionCaminadores, setUbicacionCaminadores] = useState(""); // Estado para manejar el texto del input
-  const [selectedProductoCaminadores, setSelectedProductoCaminadores] =
-    useState(""); // Estado para manejar la selección en el Dropdown
-  const [
-    selectedPrincipioActivoCaminadores,
-    setSelectedPrincipioActivoCaminadores,
-  ] = useState("");
-  const [selectedLaboratorioCaminadores, setSelectedLaboratorioCaminadores] =
-    useState("");
-  const [selectedCertificados, setSelectedCertificados] = useState("");
-  const [observacionesCaminadores, setObservacionesCaminadores] = useState("");
+  const reposicion = [
+    { label: "No", value: "no" },
+    { label: "Sí", value: "si" },
+  ];
 
-  const LimpiarCaminadores = () => {
-    setUbicacionCaminadores("");
-    setSelectedProductoCaminadores("");
-    setSelectedPrincipioActivoCaminadores("");
-    setSelectedLaboratorioCaminadores("");
-    setSelectedCertificados("");
-    setObservacionesCaminadores("");
+  // Estados para manejar los caminadores
+  const [selectedCaja, setSelectedCaja] = useState("");
+  const [selectedDensidad, setSelectedDensidad] = useState("");
+  const [selectedReposicion, setSelectedReposicion] = useState("");
+  const [selectedObservaciones, setSelectedObservaciones] = useState("");
+
+  // Funciones para limpiar los campos
+  const Limpiar = () => {
+    setSelectedCaja("");
+    setSelectedDensidad("");
+    setSelectedReposicion("");
+    setSelectedObservaciones("");
   };
 
-  // Se ejecuta cuando se selecciona un producto
-  useEffect(() => {
-    if (selectedProductoCaminadores) {
-      const productoSeleccionado = productos.find(
-        (producto) => producto.producto === selectedProductoCaminadores,
-      );
-      if (productoSeleccionado) {
-        setSelectedPrincipioActivoCaminadores(
-          productoSeleccionado.principioActivo,
-        );
-        setSelectedLaboratorioCaminadores(productoSeleccionado.laboratorio);
-        setSelectedCertificados(productoSeleccionado.numeroCertificado);
-      }
-    }
-  }, [selectedProductoCaminadores]);
-
   return (
-    <ScrollView>
-      <View style={styles.caminadoresContainer}>
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Tarjeta de ingreso de datos */}
+      <View style={styles.card}>
         <TextInput
           style={styles.input}
-          onChangeText={(value) => setUbicacionCaminadores(value)}
-          value={ubicacionCaminadores}
-          placeholder="Ubicación:"
+          placeholder="Caja N°:"
+          value={selectedCaja}
+          onChangeText={(text) => setSelectedCaja(text)}
         />
         <Dropdown
-          data={productos.map((producto) => ({
-            label: producto.producto,
-            value: producto.producto,
-          }))}
-          search
+          data={densidad}
           maxHeight={200}
           labelField="label"
           valueField="value"
-          value={selectedProductoCaminadores}
-          placeholder="Producto utilizado:"
+          value={selectedDensidad}
+          placeholder="Densidad:"
           onChange={(item) => {
-            setSelectedProductoCaminadores(item.value);
+            setSelectedDensidad(item.value);
           }}
           style={styles.dropdown}
           placeholderStyle={styles.placeholderStyle}
@@ -161,86 +65,48 @@ export default function Caminadores({
           inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
-          data={[
-            {
-              label: selectedPrincipioActivoCaminadores,
-              value: selectedPrincipioActivoCaminadores,
-            },
-          ]}
-          search={false}
+          data={reposicion}
+          maxHeight={200}
           labelField="label"
           valueField="value"
-          value={selectedPrincipioActivoCaminadores}
-          placeholder="Principio Activo:"
+          value={selectedReposicion}
+          placeholder="Reposición:"
+          onChange={(item) => {
+            setSelectedReposicion(item.value);
+          }}
           style={styles.dropdown}
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
-        />
-        <Dropdown
-          data={[
-            {
-              label: selectedLaboratorioCaminadores,
-              value: selectedLaboratorioCaminadores,
-            },
-          ]}
-          search={false}
-          labelField="label"
-          valueField="value"
-          value={selectedLaboratorioCaminadores}
-          placeholder="Laboratorio:"
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
-        />
-        <Dropdown
-          data={[{ label: selectedCertificados, value: selectedCertificados }]}
-          search={false}
-          labelField="label"
-          valueField="value"
-          value={selectedCertificados}
-          placeholder="Certificados:"
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <TextInput
           style={styles.input}
-          onChangeText={(value) => setObservacionesCaminadores(value)}
-          value={observacionesCaminadores}
-          placeholder="Observaciones:"
+          placeholder="Observaciones"
+          value={selectedObservaciones}
+          onChangeText={(text) => setSelectedObservaciones(text)}
         />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            marginTop: 20,
-          }}
-        >
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              if (
-                !ubicacionCaminadores ||
-                !selectedProductoCaminadores ||
-                !selectedPrincipioActivoCaminadores ||
-                !selectedLaboratorioCaminadores ||
-                !selectedCertificados
-              ) {
+              if (!selectedCaja || !selectedDensidad || !selectedReposicion) {
                 alert("Por favor, complete todos los campos");
                 return;
               } else {
                 const newEntry = {
-                  Ubicación: ubicacionCaminadores,
-                  Producto: selectedProductoCaminadores,
-                  PrincipioActivo: selectedPrincipioActivoCaminadores,
-                  Laboratorio: selectedLaboratorioCaminadores,
-                  Certificados: selectedCertificados,
-                  Observaciones: observacionesCaminadores,
+                  Caja: selectedCaja,
+                  Densidad: selectedDensidad,
+                  Reposición: selectedReposicion,
+                  Observaciones: selectedObservaciones,
                 };
-                setCaminadoresData((prev) => [...prev, newEntry]); // Agrega el nuevo registro
-                LimpiarCaminadores();
+                setCaminadoresData((prevData) => {
+                  const updatedData = [...prevData, newEntry];
+                  updatedData.sort((a, b) => a.Caja - b.Caja);
+                  return updatedData;
+                });
+                Limpiar();
+                alert("Datos guardados correctamente");
               }
-              alert("Datos guardados correctamente");
             }}
           >
             <Text style={styles.buttonText}>Agregar</Text>
@@ -249,64 +115,65 @@ export default function Caminadores({
             style={styles.buttonSecondary}
             onPress={() => {
               if (caminadoresData.length > 0) {
-                // Eliminar el último registro de los datos
                 setCaminadoresData((prev) => prev.slice(0, -1));
                 alert("Último registro eliminado");
               } else {
                 alert("No hay registros para eliminar");
               }
-              LimpiarCaminadores();
+              Limpiar();
             }}
           >
             <Text style={styles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
-        {caminadoresData.length > 0 && (
-          <View style={styles.spreadsheet}>
-            <View style={[styles.containerData, styles.headerData]}>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Ubicación
+      </View>
+      {/* Tarjeta para visualizar los datos */}
+      {caminadoresData.length > 0 && (
+        <View style={styles.spreadsheet}>
+          <View style={[styles.containerData, styles.headerData]}>
+            <Text style={[styles.titledatoscajas, styles.column]}>Caja N°</Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Densidad
+            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Reposición
+            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Observaciones
+            </Text>
+          </View>
+          {caminadoresData.map((entry, index) => (
+            <View style={styles.containerData} key={index}>
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Caja}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Producto
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Densidad}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Principio Activo
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Reposición}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Laboratorio
-              </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Certificado
-              </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Observaciones
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Observaciones}
               </Text>
             </View>
-            {caminadoresData.map((data, index) => (
-              <View key={index} style={styles.containerData}>
-                <Text style={[styles.column]}>{data.Ubicación}</Text>
-                <Text style={[styles.column]}>{data.Producto}</Text>
-                <Text style={[styles.column]}>{data.PrincipioActivo}</Text>
-                <Text style={[styles.column]}>{data.Laboratorio}</Text>
-                <Text style={[styles.column]}>{data.Certificados}</Text>
-                <Text style={[styles.column]}>{data.Observaciones}</Text>
-              </View>
-            ))}
-          </View>
-        )}
-      </View>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 }
 const styles = StyleSheet.create({
-  caminadoresContainer: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-around",
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: "#1b3b4f", // Fondo similar al del logo
+  },
+  card: {
+    marginBottom: 20,
+    padding: 20,
     gap: 20,
-    paddingVertical: 16,
-    backgroundColor: "#F9F9F9",
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -356,11 +223,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
   button: {
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    backgroundColor: "#28A745", // Verde para "Agregar"
+    backgroundColor: "#28A745",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -372,7 +244,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    backgroundColor: "#DC3545", // Rojo para "Cerrar"
+    backgroundColor: "#DC3545",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -387,19 +259,17 @@ const styles = StyleSheet.create({
   },
   spreadsheet: {
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: "#B0BEC5",
     borderRadius: 8,
-    overflow: "hidden",
+    overflow: "hidden", // Evita que el contenido sobresalga
   },
   containerData: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#CFD8DC",
+    borderBottomColor: "#ddd",
+    backgroundColor: "#FFF",
   },
   headerData: {
     backgroundColor: "#007AFF",
@@ -408,17 +278,16 @@ const styles = StyleSheet.create({
   },
   titledatoscajas: {
     fontWeight: "bold",
-    fontSize: 10,
+    fontSize: 12,
     textAlign: "center",
     color: "#FFF",
   },
   datoscajas: {
-    fontSize: 10,
+    fontSize: 12,
     textAlign: "center",
-    color: "#37474F",
+    color: "#263238",
   },
   column: {
     flex: 1,
-    textAlign: "center",
   },
 });

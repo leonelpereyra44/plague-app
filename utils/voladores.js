@@ -7,112 +7,78 @@ import {
   TouchableOpacity,
   TextInput,
 } from "react-native";
-import { Dropdown } from "react-native-element-dropdown"; // Usamos Dropdown directamente.
+import { Dropdown } from "react-native-element-dropdown";
 
 export default function Voladores({
   onClose,
   voladoresData,
   setVoladoresData,
 }) {
-  const ubicacionVoladores = [
-    { label: "Filtro sanitario", value: "1" },
-    { label: "Ingreso a producción", value: "2" },
-    { label: "Dosificación", value: "3" },
-    { label: "Camara de vapor", value: "4" },
-    { label: "Pasillo de horno", value: "5" },
-    { label: "Entrada de horno", value: "6" },
-    { label: "Filtro horno", value: "7" },
-    { label: "Salida horno", value: "8" },
-    { label: "Ingreso envasado", value: "9" },
-    { label: "Envasado", value: "10" },
-    { label: "Expedición", value: "11" },
-    { label: "Producción", value: "12" },
-    { label: "Rallado de pan", value: "13" },
-    { label: "Enfriador aéreo", value: "14" },
-    { label: "Envasado prod. fiestas", value: "15" },
-  ];
-
-  const densidadVoladores = [
+  const densidad = [
     { label: "Baja", value: "baja" },
     { label: "Media", value: "media" },
     { label: "Alta", value: "alta" },
   ];
 
-  const reposicionVoladores = [
+  const reposicion = [
     { label: "No", value: "no" },
     { label: "Sí", value: "si" },
   ];
 
-  //Estados para manejar los voladores
-  // const [showVoladores, setShowVoladores] = useState(false); // Estado para mostrar u ocultar los voladores
-  const [selectedUbicacionVoladores, setSelectedUbicacionVoladores] =
-    useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedUbicacionLabel, setSelectedUbicacionLabel] = useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedDensidadVoladores, setSelectedDensidadVoladores] =
-    useState("");
-  const [selectedReposicionVoladores, setSelectedReposicionVoladores] =
-    useState("");
+  // Estados para manejar los voladores
+  const [selectedCajaUv, setSelectedCajaUv] = useState("");
+  const [selectedDensidad, setSelectedDensidad] = useState("");
+  const [selectedReposicion, setSelectedReposicion] = useState("");
   const [selectedObservacionesVoladores, setSelectedObservacionesVoladores] =
     useState("");
 
-  //Funciones para limpiar los campos
+  // Funciones para limpiar los campos
   const LimpiarVoladores = () => {
-    setSelectedUbicacionVoladores("");
-    setSelectedUbicacionLabel("");
-    setSelectedDensidadVoladores("");
-    setSelectedReposicionVoladores("");
+    setSelectedCajaUv("");
+    setSelectedDensidad("");
+    setSelectedReposicion("");
     setSelectedObservacionesVoladores("");
   };
 
   return (
-    <ScrollView>
-      <View style={styles.voladoresContainer}>
-        <Dropdown
-          data={ubicacionVoladores}
-          search
-          maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedUbicacionVoladores} // Valor actualmente seleccionado
-          placeholder="Ubicación:"
-          onChange={(item) => {
-            setSelectedUbicacionVoladores(item.value); // Cambiar el valor seleccionado
-            setSelectedUbicacionLabel(item.label); // Cambiar el valor seleccionado
-          }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+    <ScrollView contentContainerStyle={styles.container}>
+      {/* Tarjeta de ingreso de datos */}
+      <View style={styles.card}>
+        <TextInput
+          style={styles.input}
+          placeholder="Caja UV N°:"
+          value={selectedCajaUv}
+          onChangeText={(text) => setSelectedCajaUv(text)}
         />
         <Dropdown
-          data={densidadVoladores}
+          data={densidad}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedDensidadVoladores} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedDensidad}
           placeholder="Densidad:"
           onChange={(item) => {
-            setSelectedDensidadVoladores(item.value); // Cambiar el valor seleccionado
+            setSelectedDensidad(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
-          data={reposicionVoladores}
+          data={reposicion}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedReposicionVoladores} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedReposicion}
           placeholder="Reposición:"
           onChange={(item) => {
-            setSelectedReposicionVoladores(item.value); // Cambiar el valor seleccionado
+            setSelectedReposicion(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <TextInput
           style={styles.input}
@@ -120,46 +86,28 @@ export default function Voladores({
           value={selectedObservacionesVoladores}
           onChangeText={(text) => setSelectedObservacionesVoladores(text)}
         />
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            marginTop: 20,
-          }}
-        >
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              if (
-                !selectedUbicacionVoladores ||
-                !selectedDensidadVoladores ||
-                !selectedReposicionVoladores
-              ) {
+              if (!selectedCajaUv || !selectedDensidad || !selectedReposicion) {
                 alert("Por favor, complete todos los campos");
                 return;
               } else {
-                const selectedUbicacionLabel =
-                  ubicacionVoladores.find(
-                    (item) => item.value === selectedUbicacionVoladores,
-                  )?.label || "";
                 const newEntry = {
-                  UV: parseInt(selectedUbicacionVoladores, 10), // Convierte el valor a entero
-                  Ubicación: selectedUbicacionLabel,
-                  Densidad: selectedDensidadVoladores,
-                  Reposición: selectedReposicionVoladores,
+                  UV: selectedCajaUv,
+                  Densidad: selectedDensidad,
+                  Reposición: selectedReposicion,
                   Observaciones: selectedObservacionesVoladores,
                 };
                 setVoladoresData((prevData) => {
-                  // Actualiza el estado de los datos
-                  const updatedData = [...prevData, newEntry]; // Agrega la nueva entrada
-                  updatedData.sort((a, b) => a.UV - b.UV); // Ordenar por "UV" de forma ascendente
-                  return updatedData; // Devuelve los datos actualizados
+                  const updatedData = [...prevData, newEntry];
+                  updatedData.sort((a, b) => a.UV - b.UV);
+                  return updatedData;
                 });
-
-                //Resetea los campos
                 LimpiarVoladores();
+                alert("Datos guardados correctamente");
               }
-              alert("Datos guardados correctamente");
             }}
           >
             <Text style={styles.buttonText}>Agregar</Text>
@@ -168,7 +116,6 @@ export default function Voladores({
             style={styles.buttonSecondary}
             onPress={() => {
               if (voladoresData.length > 0) {
-                // Eliminar el último registro de los datos
                 setVoladoresData((prev) => prev.slice(0, -1));
                 alert("Último registro eliminado");
               } else {
@@ -180,57 +127,54 @@ export default function Voladores({
             <Text style={styles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
-        {voladoresData.length > 0 && (
-          <View style={styles.spreadsheet}>
-            <View style={[styles.containerData, styles.headerData]}>
-              <Text style={[styles.titledatoscajas, styles.column]}>UV N°</Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Ubicación
+      </View>
+
+      {/* Tarjeta para visualizar los datos */}
+      {voladoresData.length > 0 && (
+        <View style={styles.spreadsheet}>
+          <View style={[styles.containerData, styles.headerData]}>
+            <Text style={[styles.titledatoscajas, styles.column]}>UV N°</Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Densidad
+            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Reposición
+            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Observaciones
+            </Text>
+          </View>
+          {voladoresData.map((entry, index) => (
+            <View style={styles.containerData} key={index}>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.UV}</Text>
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Densidad}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Densidad
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Reposición}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Reposición
-              </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Observaciones
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Observaciones}
               </Text>
             </View>
-            {voladoresData.map((entry, index) => (
-              <View style={styles.containerData} key={index}>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.UV}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Ubicación}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Densidad}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Reposición}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Observaciones}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-      </View>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  voladoresContainer: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-around",
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: "#1b3b4f", // Fondo similar al del logo
+  },
+  card: {
+    marginBottom: 20,
+    padding: 20,
     gap: 20,
-    paddingVertical: 16,
-    backgroundColor: "#F9F9F9",
+    backgroundColor: "#FFFFFF",
     borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -280,11 +224,16 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 2,
   },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginTop: 20,
+  },
   button: {
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    backgroundColor: "#28A745", // Verde para "Agregar"
+    backgroundColor: "#28A745",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -296,7 +245,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
-    backgroundColor: "#DC3545", // Rojo para "Cerrar"
+    backgroundColor: "#DC3545",
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
@@ -311,19 +260,17 @@ const styles = StyleSheet.create({
   },
   spreadsheet: {
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: "#B0BEC5",
     borderRadius: 8,
-    overflow: "hidden",
+    overflow: "hidden", // Evita que el contenido sobresalga
   },
   containerData: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
     paddingVertical: 10,
-    paddingHorizontal: 12,
     borderBottomWidth: 1,
-    borderBottomColor: "#CFD8DC",
+    borderBottomColor: "#ddd",
+    backgroundColor: "#FFF",
   },
   headerData: {
     backgroundColor: "#007AFF",
@@ -332,17 +279,16 @@ const styles = StyleSheet.create({
   },
   titledatoscajas: {
     fontWeight: "bold",
-    fontSize: 10,
+    fontSize: 12,
     textAlign: "center",
     color: "#FFF",
   },
   datoscajas: {
-    fontSize: 10,
+    fontSize: 12,
     textAlign: "center",
-    color: "#37474F",
+    color: "#263238",
   },
   column: {
     flex: 1,
-    textAlign: "center",
   },
 });

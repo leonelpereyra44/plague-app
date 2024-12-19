@@ -16,8 +16,8 @@ import { Dropdown } from "react-native-element-dropdown";
 
 export default function Exportar({
   onClose,
-  empresaData,
-  productosRoedoresData,
+  clienteData,
+  productosData,
   roedoresData,
   caminadoresData,
   voladoresData,
@@ -77,8 +77,8 @@ export default function Exportar({
 
   // Definir las secciones de datos
   const dataSections = [
-    { title: "Empresa", data: empresaData || [] },
-    { title: "Productos Roedores", data: productosRoedoresData || [] },
+    { title: "Empresa", data: clienteData || [] },
+    { title: "Productos", data: productosData || [] },
     { title: "Roedores", data: roedoresData || [] },
     { title: "Caminadores", data: caminadoresData || [] },
     { title: "Voladores", data: voladoresData || [] },
@@ -91,17 +91,20 @@ export default function Exportar({
     try {
       // Construcción del contenido HTML
       let htmlContent = `<h1 style="text-align:center; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>`;
-
+  
       dataSections.forEach(({ title, data }) => {
-        htmlContent += `<h2 style="text-align:left; color: #333;">${title}</h2>`;
+        // Solo agregar sección si hay datos
         if (data.length > 0) {
+          htmlContent += `<h2 style="text-align:left; color: #333;">${title}</h2>`;
           htmlContent += `<table style="width: 100%; border-collapse: collapse; font-size: 12px;">`;
+  
           const headers = Object.keys(data[0]);
           htmlContent += `<tr style="background-color: #f0f0f0;">`;
           headers.forEach((header) => {
             htmlContent += `<th style="border: 1px solid #ccc; padding: 8px; text-align: center; font-weight: bold;">${header}</th>`;
           });
           htmlContent += `</tr>`;
+  
           data.forEach((row) => {
             htmlContent += `<tr>`;
             headers.forEach((header) => {
@@ -109,15 +112,14 @@ export default function Exportar({
             });
             htmlContent += `</tr>`;
           });
+  
           htmlContent += `</table>`;
-        } else {
-          htmlContent += `<p>No hay datos en esta sección.</p>`;
         }
       });
-
+  
       const selectedUser = usuarioData[0];
       const { nombre, habilitacion, cargo } = selectedUser;
-
+  
       // Agregar la sección de firmas
       htmlContent += `
         <div style="margin-top: 40px; text-align: center;">
@@ -130,9 +132,9 @@ export default function Exportar({
             </div>
           </div> 
         </div>`;
-
+  
       console.log(htmlContent); // Inspecciona el contenido antes de pasarlo a Print
-
+  
       // Generar y compartir el PDF
       const { uri } = await Print.printToFileAsync({ html: htmlContent });
       console.log("PDF generado en:", uri);
@@ -141,6 +143,7 @@ export default function Exportar({
       console.error("Error al manejar la exportación:", error);
     }
   };
+  
 
   const handleExportToXLSX = async () => {
     const sheetData = [];
@@ -198,8 +201,8 @@ export default function Exportar({
     return (
       <View style={styles.container}>
         <Text style={styles.noDataText}>No hay datos disponibles.</Text>
-        <TouchableOpacity style={styles.touchable} onPress={onClose}>
-          <Text style={styles.text}>Cerrar</Text>
+        <TouchableOpacity style={styles.buttonClose} onPress={onClose}>
+          <Text style={styles.buttonText}>Cerrar</Text>
         </TouchableOpacity>
       </View>
     );
@@ -210,42 +213,35 @@ export default function Exportar({
       <View style={styles.container}>
         <Text style={styles.title}>Planilla de M.I.P SAN AGUSTIN</Text>
 
-        {dataSections.map(({ title, data }, sectionIndex) => (
-          <View key={sectionIndex} style={styles.section}>
-            <Text style={styles.sectionTitle}>{title}</Text>
-            {data.length > 0 && (
-              <>
-                <View style={[styles.containerData, styles.headerData]}>
-                  {Object.keys(data[0]).map((column, colIndex) => (
+        {dataSections.map(({ title, data }, sectionIndex) =>
+          data.length > 0 ? (
+            <View key={sectionIndex} style={styles.section}>
+              <Text style={styles.sectionTitle}>{title}</Text>
+              <View style={[styles.containerData, styles.headerData]}>
+                {Object.keys(data[0]).map((column, colIndex) => (
+                  <Text
+                    key={colIndex}
+                    style={[styles.titledatoscajas, styles.column]}
+                  >
+                    {column.charAt(0).toUpperCase() + column.slice(1)}{" "}
+                  </Text>
+                ))}
+              </View>
+              {data.map((entry, rowIndex) => (
+                <View style={styles.containerData} key={rowIndex}>
+                  {Object.keys(entry).map((column, colIndex) => (
                     <Text
                       key={colIndex}
-                      style={[styles.titledatoscajas, styles.column]}
+                      style={[styles.datoscajas, styles.column]}
                     >
-                      {column.charAt(0).toUpperCase() + column.slice(1)}{" "}
+                      {entry[column] ?? "-"}
                     </Text>
                   ))}
                 </View>
-                {data.map((entry, rowIndex) => (
-                  <View style={styles.containerData} key={rowIndex}>
-                    {Object.keys(entry).map((column, colIndex) => (
-                      <Text
-                        key={colIndex}
-                        style={[styles.datoscajas, styles.column]}
-                      >
-                        {entry[column] ?? "-"}
-                      </Text>
-                    ))}
-                  </View>
-                ))}
-              </>
-            )}
-            {data.length === 0 && (
-              <Text style={styles.noDataText}>
-                No hay datos en esta sección.
-              </Text>
-            )}
-          </View>
-        ))}
+              ))}
+            </View>
+          ) : null,
+        )}
 
         <View style={styles.usuarioContainer}>
           <Text style={styles.subtitle}>Seleccione un usuario</Text>
@@ -255,9 +251,7 @@ export default function Exportar({
             valueField="nombre"
             value={selectedUsuario}
             placeholder="Seleccione usuario"
-            onChange={
-              (item) => setSelectedUsuario(item.nombre) // Actualiza el valor del usuario seleccionado
-            }
+            onChange={(item) => setSelectedUsuario(item.nombre)}
             style={[
               styles.dropdown,
               isDropdownDisabled && styles.dropdownDisabled,
@@ -282,7 +276,7 @@ export default function Exportar({
             <Text style={styles.buttonText}>Exportar a XLSX</Text>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.buttonSecondary} onPress={onClose}>
+        <TouchableOpacity style={styles.buttonClose} onPress={onClose}>
           <Text style={styles.buttonText}>Cerrar</Text>
         </TouchableOpacity>
       </View>
@@ -388,12 +382,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   buttonContainer: {
-    flex:1,
+    flex: 1,
     flexDirection: "row",
     marginTop: 20,
     marginBottom: 20,
     gap: 12,
-    alignItems: "center", // Centrar horizontalmente
+    justifyContent: "space-between",
   },
   button: {
     paddingVertical: 12,
@@ -407,7 +401,7 @@ const styles = StyleSheet.create({
     shadowRadius: 4,
     elevation: 3,
   },
-  buttonSecondary: {
+  buttonClose: {
     marginTop: 20,
     paddingVertical: 12,
     paddingHorizontal: 20,

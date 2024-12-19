@@ -63,8 +63,8 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
   };
 
   return (
-    <ScrollView>
-      <View style={styles.roedoresContainer}>
+    <ScrollView contentContainerStyle={styles.container}>
+      <View style={styles.card}>
         <TextInput
           style={styles.input}
           onChangeText={(value) => setCajaRoedores(value)}
@@ -162,13 +162,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
         />
 
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            marginTop: 20,
-          }}
-        >
+        <View style={styles.containerAgregar}>
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
@@ -227,72 +221,70 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             <Text style={styles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
-        {roedoresData.length > 0 && (
-          <View style={styles.spreadsheet}>
-            <View style={[styles.containerData, styles.headerData]}>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Caja N°
+      </View>
+      {roedoresData.length > 0 && (
+        <View style={styles.spreadsheet}>
+          <View style={[styles.containerData, styles.headerData]}>
+            <Text style={[styles.titledatoscajas, styles.column]}>Caja N°</Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>Vivos</Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>Muertos</Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Tipo trampa
+            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>Consumo</Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
+              Reposición
+            </Text>
+          </View>
+          {roedoresData.map((entry, index) => (
+            <View style={styles.containerData} key={index}>
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Caja}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>Vivos</Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Muertos
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Vivos}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Tipo trampa
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Muertos}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Consumo
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.TipoTrampa}
               </Text>
-              <Text style={[styles.titledatoscajas, styles.column]}>
-                Reposición
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.ConsumoCebos}
+              </Text>
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Reposición}
               </Text>
             </View>
-            {roedoresData.map((entry, index) => (
-              <View style={styles.containerData} key={index}>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Caja}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Vivos}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Muertos}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.TipoTrampa}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.ConsumoCebos}
-                </Text>
-                <Text style={[styles.datoscajas, styles.column]}>
-                  {entry.Reposición}
-                </Text>
-              </View>
-            ))}
-          </View>
-        )}
-      </View>
+          ))}
+        </View>
+      )}
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  roedoresContainer: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-between",
+  container: {
+    flexGrow: 1,
+    padding: 20,
+    backgroundColor: "#1b3b4f", // Fondo similar al del logo
+  },
+  card: {
+    marginBottom: 20,
+    padding: 20,
     gap: 20,
-    paddingVertical: 16,
-    backgroundColor: "#F5F5F5", // Fondo gris claro
+    backgroundColor: "#FFF",
     borderRadius: 12,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 4,
+    elevation: 2,
   },
   containerAgregar: {
     flexDirection: "row",
-    justifyContent: "space-evenly",
+    justifyContent: "space-between",
     marginTop: 20,
   },
   dropdown: {
@@ -368,8 +360,6 @@ const styles = StyleSheet.create({
   },
   spreadsheet: {
     marginTop: 20,
-    borderWidth: 1,
-    borderColor: "#ddd",
     borderRadius: 8,
     overflow: "hidden", // Evita que el contenido sobresalga
   },

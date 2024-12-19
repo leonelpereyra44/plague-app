@@ -37,3 +37,6 @@ yarn-error.*
 
 # eslint
 .eslintrc.js
+
+# misc
+.test.js
