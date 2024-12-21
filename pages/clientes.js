@@ -10,6 +10,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../utils/DataContext"; // Asegúrate de importar el contexto
 import ListarClientes from "../utils/listarClientes"; // Importa el componente de clientes
+import AgregarClientes from "../utils/agregarClientes";
 
 export default function Clientes() {
   const insets = useSafeAreaInsets();
@@ -18,12 +19,20 @@ export default function Clientes() {
   const { clienteData, setClienteData } = useData(); // Obtiene el contexto correctamente
 
   const [showClientes, setShowClientes] = useState(false); // Estado para mostrar los clientes
+  const [showAgregarClientes, setShowAgregarClientes] = useState(false); // Estado para mostrar el formulario de agregar clientes
   const [titulo, setTitulo] = useState("Clientes"); // Estado para manejar el título de la planilla
 
   const DesplegarClientes = () => {
     setShowClientes((prev) => !prev); // Cambia el estado de mostrar clientes
+    setShowAgregarClientes(false); // Oculta el formulario de agregar clientes
     setTitulo("Clientes"); // Cambia el título de la planilla
   };
+
+  const DesplegarAgregarClientes = () => {
+    setShowAgregarClientes((prev) => !prev); // Cambia el estado de mostrar clientes
+    setShowClientes(false); // Oculta la lista de clientes
+    setTitulo("Agregar Cliente"); // Cambia el título de la planilla
+  }
 
   return (
     <>
@@ -44,7 +53,13 @@ export default function Clientes() {
                 style={styles.touchable}
                 onPress={DesplegarClientes}
               >
-                <Text style={styles.textTouchable}>Ver Clientes</Text>
+                <Text style={styles.textTouchable}>Clientes</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.touchable}
+                onPress={DesplegarAgregarClientes}
+              >
+                <Text style={styles.textTouchable}>Nuevo Cliente</Text>
               </TouchableOpacity>
             </View>
           </ScrollView>
@@ -52,6 +67,13 @@ export default function Clientes() {
         {showClientes && (
           <ListarClientes
             onClose={() => setShowClientes(false)}
+            clienteData={clienteData} // Pasa clienteData directamente
+            setClienteData={setClienteData} // Pasa setClienteData directamente
+          />
+        )}
+        {showAgregarClientes && (
+          <AgregarClientes
+            onClose={() => setShowAgregarClientes(false)}
             clienteData={clienteData} // Pasa clienteData directamente
             setClienteData={setClienteData} // Pasa setClienteData directamente
           />

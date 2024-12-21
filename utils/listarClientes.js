@@ -10,6 +10,7 @@ import {
   TextInput,
   KeyboardAvoidingView,
   Platform,
+  ScrollView,
 } from "react-native";
 import { supabase } from "./database/supabaseClient";
 
@@ -46,6 +47,54 @@ export default function ListarClientes() {
     setEditingCliente(cliente);
     setClienteNombre(cliente.nombre);
     setPlantas(cliente.plantas || []);
+  }
+
+  async function handleEliminarCliente(cliente) {
+    Alert.alert(
+      "Cuidado!!!",
+      `Se eliminará al cliente: ${cliente.nombre} ¿Estás seguro?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel",
+        },
+        {
+          text: "Eliminar",
+          style: "destructive",
+          onPress: async () => {
+            setLoading(true);
+            try {
+              const { error: plantasError } = await supabase
+                .from("plantas")
+                .delete()
+                .eq("cliente_id", cliente.id);
+
+              if (plantasError) {
+                throw new Error(
+                  `No se pudieron eliminar las plantas asociadas: ${plantasError.message}`,
+                );
+              }
+              const { error: clienteError } = await supabase
+                .from("clientes")
+                .delete()
+                .eq("id", cliente.id);
+
+              if (clienteError) {
+                throw new Error(
+                  `No se pudo eliminar al cliente: ${clienteError.message}`,
+                );
+              }
+              Alert.alert("Éxito", "Se eliminó el cliente con éxito.");
+              fetchClientes(); // Actualizar la lista de clientes
+            } catch (error) {
+              Alert.alert("Error", error.message);
+            } finally {
+              setLoading(false);
+            }
+          },
+        },
+      ],
+    );
   }
 
   async function handleGuardarCambios() {
@@ -123,6 +172,8 @@ export default function ListarClientes() {
 
   async function handleEliminarPlanta(index) {
     const plantaAEliminar = plantas[index];
+
+    // Verificar si es la única planta
     if (plantas.length === 1) {
       Alert.alert(
         "Error",
@@ -131,21 +182,78 @@ export default function ListarClientes() {
       return;
     }
 
-    if (plantaAEliminar.id) {
-      const { error } = await supabase
-        .from("plantas")
-        .delete()
-        .eq("id", plantaAEliminar.id);
+    // Confirmar eliminación
+    Alert.alert(
+      "Eliminar Planta",
+      `¿Estás seguro de eliminar la planta: ${plantaAEliminar.nombre}?`,
+      [
+        {
+          text: "Cancelar",
+          style: "cancel", // Estilo para el botón de cancelar
+        },
+        {
+          text: "Confirmar",
+          style: "destructive", // Estilo para el botón de confirmación (destructivo)
+          onPress: async () => {
+            if (plantaAEliminar.id) {
+              const { error } = await supabase
+                .from("plantas")
+                .delete()
+                .eq("id", plantaAEliminar.id);
 
-      if (error) {
-        Alert.alert("Error", "No se pudo eliminar la planta: " + error.message);
-        return;
-      }
-    }
+              if (error) {
+                Alert.alert(
+                  "Error",
+                  "No se pudo eliminar la planta: " + error.message,
+                );
+                return;
+              }
+            }
 
-    const updatedPlantas = plantas.filter((_, i) => i !== index);
-    setPlantas(updatedPlantas);
+            const updatedPlantas = plantas.filter((_, i) => i !== index);
+            setPlantas(updatedPlantas);
+          },
+        },
+      ],
+    );
   }
+
+  const listaPlantas = (item) => {
+    return (
+      <View>
+        {item.plantas.map((planta) => (
+          <Text key={planta.id} style={styles.plantName}>
+            - {planta.nombre}
+          </Text>
+        ))}
+      </View>
+    );
+  };
+
+  const listaEditarPlantas = () => {
+    return (
+      <View>
+        {plantas.map((item, index) => (
+          <View key={index} style={styles.row}>
+            <TextInput
+              style={styles.input}
+              value={item.nombre}
+              onChangeText={(text) => handleModificarPlanta(index, text)}
+              placeholder="Planta/Sucursal:"
+            />
+            <TouchableOpacity
+              onPress={() => handleEliminarPlanta(index)}
+              style={styles.editDeleteButton}
+            >
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                Eliminar
+              </Text>
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+    );
+  };
 
   if (loading) {
     return (
@@ -156,92 +264,88 @@ export default function ListarClientes() {
   }
 
   return (
-    <KeyboardAvoidingView
-      style={styles.container}
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-    >
-      {editingCliente && (
-        <View style={styles.editCard}>
-          <Text style={styles.title}>Editar Cliente</Text>
-          <TextInput
-            style={styles.input}
-            value={clienteNombre}
-            onChangeText={setClienteNombre}
-            placeholder="Nombre del cliente"
-          />
-
-          <FlatList
-            style={styles.plantList}
-            data={plantas}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item, index }) => (
-              <View style={styles.row}>
-                <TextInput
-                  style={styles.input}
-                  value={item.nombre}
-                  onChangeText={(text) => handleModificarPlanta(index, text)}
-                  placeholder="Nombre de la planta"
-                />
+    <View style={styles.container}>
+      {/* Lista de clientes */}
+      {!editingCliente && (
+        <FlatList
+          data={clientes}
+          keyExtractor={(item) => item.id.toString()}
+          renderItem={({ item }) => (
+            <View style={styles.card}>
+              <Text style={styles.title}>{item.nombre}</Text>
+              {listaPlantas(item)}
+              <View style={styles.buttonContainer}>
                 <TouchableOpacity
-                  onPress={() => handleEliminarPlanta(index)}
+                  onPress={() => handleEditarCliente(item)}
+                  style={styles.editButton}
+                >
+                  <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                    Editar
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  onPress={() => handleEliminarCliente(item)}
                   style={styles.deleteButton}
                 >
-                  <Text>Eliminar</Text>
+                  <Text style={{ color: "#fff", fontWeight: "bold" }}>
+                    Eliminar
+                  </Text>
                 </TouchableOpacity>
               </View>
-            )}
-          />
-
-          <TextInput
-            style={styles.input}
-            value={nuevaPlanta}
-            onChangeText={setNuevaPlanta}
-            placeholder="Agregar nueva planta"
-          />
-          <TouchableOpacity
-            onPress={handleAgregarPlanta}
-            style={styles.addButton}
-          >
-            <Text style={styles.addButtonText}>Agregar Planta</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            onPress={handleGuardarCambios}
-            style={styles.saveButton}
-          >
-            <Text style={styles.saveButtonText}>Guardar Cambios</Text>
-          </TouchableOpacity>
-        </View>
+            </View>
+          )}
+        />
       )}
 
-      <FlatList
-        data={clientes}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Text style={styles.title}>{item.nombre}</Text>
-            <FlatList
-              data={item.plantas}
-              keyExtractor={(planta) => planta.id.toString()}
-              renderItem={({ item: planta }) => (
-                <Text style={styles.plantName}>- {planta.nombre}</Text>
-              )}
+      {/* Solo cuando estamos editando un cliente */}
+      {editingCliente && (
+        <KeyboardAvoidingView
+          style={styles.editCard}
+          behavior={Platform.OS === "ios" ? "padding" : "height"}
+        >
+          <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+            <Text style={styles.title}>Editar Cliente</Text>
+            <TextInput
+              style={styles.input}
+              value={clienteNombre}
+              onChangeText={setClienteNombre}
+              placeholder="Nombre:"
+            />
+
+            {/* Lista de plantas */}
+            {listaEditarPlantas()}
+
+            <TextInput
+              style={styles.input}
+              value={nuevaPlanta}
+              onChangeText={setNuevaPlanta}
+              placeholder="Agregar nueva planta"
             />
             <TouchableOpacity
-              onPress={() => handleEditarCliente(item)}
-              style={styles.editButton}
+              onPress={handleAgregarPlanta}
+              style={styles.addButton}
             >
-              <Text>Editar</Text>
+              <Text style={styles.addButtonText}>Agregar Planta</Text>
             </TouchableOpacity>
-          </View>
-        )}
-      />
-    </KeyboardAvoidingView>
+            <TouchableOpacity
+              onPress={handleGuardarCambios}
+              style={styles.saveButton}
+            >
+              <Text style={styles.saveButtonText}>Guardar Cambios</Text>
+            </TouchableOpacity>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      )}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
+  },
+  scrollContent: {
     padding: 20,
   },
   card: {
@@ -276,13 +380,39 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between", // Asegura que el botón esté al final
     marginBottom: 10,
+    paddingRight: 10, // Espacio entre el botón y el borde
+  },
+  editDeleteButton: {
+    backgroundColor: "#d9534f",
+    padding: 10, // Espaciado interno uniforme
+    borderRadius: 5,
+    alignItems: "center",
+    width: 80, // Tamaño fijo
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    flexWrap: "wrap", // Permite que los botones pasen a la siguiente línea
+    justifyContent: "space-between", // Espaciado uniforme entre los botones
+    marginTop: 10,
+    gap: 10, // Espacio entre botones
   },
   deleteButton: {
     backgroundColor: "#d9534f",
-    padding: 10,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     borderRadius: 5,
-    marginLeft: 10,
+    flexShrink: 1, // Permite que el botón reduzca su tamaño si es necesario
+    alignItems: "center",
+  },
+  editButton: {
+    backgroundColor: "#f0ad4e",
+    paddingVertical: 10,
+    paddingHorizontal: 15,
+    borderRadius: 5,
+    flexShrink: 1,
+    alignItems: "center",
   },
   saveButton: {
     backgroundColor: "#5cb85c",
@@ -304,11 +434,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontWeight: "bold",
   },
-  editButton: {
-    backgroundColor: "#f0ad4e",
-    padding: 10,
-    borderRadius: 5,
-  },
   cancelButton: {
     backgroundColor: "#f0f0f0", // Fondo gris claro
     padding: 10,
@@ -318,7 +443,6 @@ const styles = StyleSheet.create({
     borderWidth: 1, // Borde opcional
     borderColor: "#ccc", // Color del borde
   },
-
   cancelButtonText: {
     color: "#333", // Texto de color oscuro
     fontWeight: "bold",

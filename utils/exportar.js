@@ -13,6 +13,7 @@ import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
 import * as XLSX from "xlsx";
 import { Dropdown } from "react-native-element-dropdown";
+import { TextInput } from "react-native-gesture-handler";
 
 export default function Exportar({
   onClose,
@@ -46,6 +47,7 @@ export default function Exportar({
   const [selectedUsuario, setSelectedUsuario] = useState("");
   const [isDropdownDisabled, setIsDropdownDisabled] = useState(false);
   const [usuarioData, setUsuarioData] = useState([]);
+  const [observaciones, setObservaciones] = useState("");
 
   const handleGuardarUsuario = async () => {
     console.log("Estado de usuario antes de guardar:", usuario);
@@ -82,6 +84,7 @@ export default function Exportar({
     { title: "Roedores", data: roedoresData || [] },
     { title: "Caminadores", data: caminadoresData || [] },
     { title: "Voladores", data: voladoresData || [] },
+    { title: "Observaciones", data: [{ observaciones }] },
   ];
 
   // Si no hay datos en ninguna sección, mostrar mensaje
@@ -91,20 +94,20 @@ export default function Exportar({
     try {
       // Construcción del contenido HTML
       let htmlContent = `<h1 style="text-align:center; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>`;
-  
+
       dataSections.forEach(({ title, data }) => {
         // Solo agregar sección si hay datos
         if (data.length > 0) {
           htmlContent += `<h2 style="text-align:left; color: #333;">${title}</h2>`;
           htmlContent += `<table style="width: 100%; border-collapse: collapse; font-size: 12px;">`;
-  
+
           const headers = Object.keys(data[0]);
           htmlContent += `<tr style="background-color: #f0f0f0;">`;
           headers.forEach((header) => {
             htmlContent += `<th style="border: 1px solid #ccc; padding: 8px; text-align: center; font-weight: bold;">${header}</th>`;
           });
           htmlContent += `</tr>`;
-  
+
           data.forEach((row) => {
             htmlContent += `<tr>`;
             headers.forEach((header) => {
@@ -112,14 +115,14 @@ export default function Exportar({
             });
             htmlContent += `</tr>`;
           });
-  
+
           htmlContent += `</table>`;
         }
       });
-  
+
       const selectedUser = usuarioData[0];
       const { nombre, habilitacion, cargo } = selectedUser;
-  
+
       // Agregar la sección de firmas
       htmlContent += `
         <div style="margin-top: 40px; text-align: center;">
@@ -132,9 +135,9 @@ export default function Exportar({
             </div>
           </div> 
         </div>`;
-  
+
       console.log(htmlContent); // Inspecciona el contenido antes de pasarlo a Print
-  
+
       // Generar y compartir el PDF
       const { uri } = await Print.printToFileAsync({ html: htmlContent });
       console.log("PDF generado en:", uri);
@@ -143,7 +146,6 @@ export default function Exportar({
       console.error("Error al manejar la exportación:", error);
     }
   };
-  
 
   const handleExportToXLSX = async () => {
     const sheetData = [];
@@ -242,7 +244,18 @@ export default function Exportar({
             </View>
           ) : null,
         )}
-
+        {/* Contenedor observaciones */}
+        <View style={styles.observacionesContainer}>
+          <TextInput
+            style={styles.observacionesInput}
+            placeholder="Observaciones:"
+            multiline
+            numberOfLines={4}
+            value={observaciones}
+            onChangeText={setObservaciones}
+          />
+        </View>
+        {/* Contenedor de usuario */}
         <View style={styles.usuarioContainer}>
           <Text style={styles.subtitle}>Seleccione un usuario</Text>
           <Dropdown
@@ -268,6 +281,7 @@ export default function Exportar({
             </View>
           )}
         </View>
+        {/* Contenedor de Botones */}
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.button} onPress={handleExportToPDF}>
             <Text style={styles.buttonText}>Exportar a PDF</Text>
@@ -355,6 +369,27 @@ const styles = StyleSheet.create({
   dropdownDisabled: {
     backgroundColor: "#f0f0f0",
   },
+  // Añadido al final del objeto `styles`
+  observacionesContainer: {
+    marginVertical: 20, // Espaciado vertical
+    padding: 10, // Relleno interno
+    borderRadius: 10, // Bordes redondeados
+    borderWidth: 1, // Grosor del borde
+    borderColor: "#6C757D", // Gris oscuro
+    backgroundColor: "#F8F9FA", // Fondo gris claro
+  },
+  observacionesInput: {
+    height: 100, // Altura del campo de texto
+    textAlignVertical: "top", // Alinear texto al inicio (verticalmente)
+    fontSize: 14, // Tamaño del texto
+    color: "#212529", // Color del texto
+    padding: 10, // Espaciado interno
+    borderWidth: 1, // Grosor del borde
+    borderRadius: 8, // Bordes redondeados
+    borderColor: "#ADB5BD", // Color del borde gris
+    backgroundColor: "#FFFFFF", // Fondo blanco
+  },
+
   firmaImage: {
     width: 200,
     height: 100,

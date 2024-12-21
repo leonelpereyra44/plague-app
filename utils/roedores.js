@@ -43,16 +43,15 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
   ];
 
   const [cajaRoedores, setCajaRoedores] = useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedRoedoresVivos, setSelectedRoedoresVivos] = useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedRoedoresMuertos, setSelectedRoedoresMuertos] = useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedTipoTrampa, setSelectedTipoTrampa] = useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedMateriaFecal, setSelectedMateriaFecal] = useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedConsumoCebos, setSelectedConsumoCebos] = useState(""); // Estado para manejar la selección en el Dropdown
-  const [selectedReposicionRoedores, setSelectedReposicionRoedores] =
-    useState(""); // Estado para manejar la selección en el Dropdown
+  const [selectedRoedoresVivos, setSelectedRoedoresVivos] = useState("");
+  const [selectedRoedoresMuertos, setSelectedRoedoresMuertos] = useState("");
+  const [selectedTipoTrampa, setSelectedTipoTrampa] = useState("");
+  const [selectedMateriaFecal, setSelectedMateriaFecal] = useState("");
+  const [selectedConsumoCebos, setSelectedConsumoCebos] = useState("");
+  const [selectedReposicionRoedores, setSelectedReposicionRoedores] = useState("");
+  const [observaciones, setObservaciones] = useState(""); // Estado para manejar las observaciones
 
   const LimpiarRoedores = () => {
-    // Función para limpiar los campos de los roedores
     setCajaRoedores("");
     setSelectedRoedoresVivos("");
     setSelectedRoedoresMuertos("");
@@ -60,6 +59,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
     setSelectedMateriaFecal("");
     setSelectedConsumoCebos("");
     setSelectedReposicionRoedores("");
+    setObservaciones("");
   };
 
   return (
@@ -74,92 +74,100 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
         <Dropdown
           data={roedoresVivos}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedRoedoresVivos} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedRoedoresVivos}
           placeholder="Roedores Vivos:"
           onChange={(item) => {
-            setSelectedRoedoresVivos(item.value); // Cambiar el valor seleccionado
+            setSelectedRoedoresVivos(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
           data={roedoresMuertos}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedRoedoresMuertos} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedRoedoresMuertos}
           placeholder="Roedores Muertos:"
           onChange={(item) => {
-            setSelectedRoedoresMuertos(item.value); // Cambiar el valor seleccionado
+            setSelectedRoedoresMuertos(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
           data={tipoTrampa}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedTipoTrampa} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedTipoTrampa}
           placeholder="Trampa:"
           onChange={(item) => {
-            setSelectedTipoTrampa(item.value); // Cambiar el valor seleccionado
+            setSelectedTipoTrampa(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
           data={materiaFecal}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedMateriaFecal} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedMateriaFecal}
           placeholder="Materia fecal:"
           onChange={(item) => {
-            setSelectedMateriaFecal(item.value); // Cambiar el valor seleccionado
+            setSelectedMateriaFecal(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
           data={consumoCebos}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedConsumoCebos} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedConsumoCebos}
           placeholder="Consumo cebos:"
           onChange={(item) => {
-            setSelectedConsumoCebos(item.value); // Cambiar el valor seleccionado
+            setSelectedConsumoCebos(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
         />
         <Dropdown
           data={reposicionRoedores}
           maxHeight={200}
-          labelField="label" // Define la clave que contiene el texto visible
-          valueField="value" // Define la clave que contiene el valor interno
-          value={selectedReposicionRoedores} // Valor actualmente seleccionado
+          labelField="label"
+          valueField="value"
+          value={selectedReposicionRoedores}
           placeholder="Reposición:"
           onChange={(item) => {
-            setSelectedReposicionRoedores(item.value); // Cambiar el valor seleccionado
+            setSelectedReposicionRoedores(item.value);
           }}
-          style={styles.dropdown} // Estilo del componente Dropdown
-          placeholderStyle={styles.placeholderStyle} // Estilo del texto del placeholder
-          selectedTextStyle={styles.selectedTextStyle} // Estilo del texto seleccionado
-          inputSearchStyle={styles.inputSearchStyle} // Estilo del input de búsqueda
+          style={styles.dropdown}
+          placeholderStyle={styles.placeholderStyle}
+          selectedTextStyle={styles.selectedTextStyle}
+          inputSearchStyle={styles.inputSearchStyle}
+        />
+
+        <TextInput
+          style={[styles.input, styles.textArea]}
+          onChangeText={(value) => setObservaciones(value)}
+          value={observaciones}
+          placeholder="Observaciones"
+          multiline={true}
         />
 
         <View style={styles.containerAgregar}>
@@ -179,25 +187,23 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
                 return;
               }
 
-              // Crear una nueva entrada
               const newEntry = {
-                Caja: parseInt(cajaRoedores, 10), // Convertir a número para ordenar correctamente
+                Caja: parseInt(cajaRoedores, 10),
                 Vivos: selectedRoedoresVivos,
                 Muertos: selectedRoedoresMuertos,
                 TipoTrampa: selectedTipoTrampa,
                 MateriaFecal: selectedMateriaFecal,
                 ConsumoCebos: selectedConsumoCebos,
                 Reposición: selectedReposicionRoedores,
+                Observaciones: observaciones,
               };
 
-              // Actualizar y ordenar los datos
               setRoedoresData((prevData) => {
                 const updatedData = [...prevData, newEntry];
-                updatedData.sort((a, b) => a.Caja - b.Caja); // Ordenar por "caja" de forma ascendente
+                updatedData.sort((a, b) => a.Caja - b.Caja);
                 return updatedData;
               });
 
-              // Limpiar los campos del formulario
               LimpiarRoedores();
               alert("Datos guardados con éxito");
             }}
@@ -209,7 +215,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             style={styles.buttonSecondary}
             onPress={() => {
               if (roedoresData.length > 0) {
-                // Eliminar el último registro de los datos
                 setRoedoresData((prev) => prev.slice(0, -1));
                 alert("Último registro eliminado");
               } else {
@@ -228,34 +233,20 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             <Text style={[styles.titledatoscajas, styles.column]}>Caja N°</Text>
             <Text style={[styles.titledatoscajas, styles.column]}>Vivos</Text>
             <Text style={[styles.titledatoscajas, styles.column]}>Muertos</Text>
-            <Text style={[styles.titledatoscajas, styles.column]}>
-              Tipo trampa
-            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>Tipo trampa</Text>
             <Text style={[styles.titledatoscajas, styles.column]}>Consumo</Text>
-            <Text style={[styles.titledatoscajas, styles.column]}>
-              Reposición
-            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>Reposición</Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>Observaciones</Text>
           </View>
           {roedoresData.map((entry, index) => (
             <View style={styles.containerData} key={index}>
-              <Text style={[styles.datoscajas, styles.column]}>
-                {entry.Caja}
-              </Text>
-              <Text style={[styles.datoscajas, styles.column]}>
-                {entry.Vivos}
-              </Text>
-              <Text style={[styles.datoscajas, styles.column]}>
-                {entry.Muertos}
-              </Text>
-              <Text style={[styles.datoscajas, styles.column]}>
-                {entry.TipoTrampa}
-              </Text>
-              <Text style={[styles.datoscajas, styles.column]}>
-                {entry.ConsumoCebos}
-              </Text>
-              <Text style={[styles.datoscajas, styles.column]}>
-                {entry.Reposición}
-              </Text>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.Caja}</Text>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.Vivos}</Text>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.Muertos}</Text>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.TipoTrampa}</Text>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.ConsumoCebos}</Text>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.Reposición}</Text>
+              <Text style={[styles.datoscajas, styles.column]}>{entry.Observaciones}</Text>
             </View>
           ))}
         </View>

@@ -30,6 +30,7 @@ export default function Caminadores({
   const [selectedDensidad, setSelectedDensidad] = useState("");
   const [selectedReposicion, setSelectedReposicion] = useState("");
   const [selectedObservaciones, setSelectedObservaciones] = useState("");
+  const [ubicacion, setUbicacion] = useState("");
 
   // Funciones para limpiar los campos
   const Limpiar = () => {
@@ -37,6 +38,7 @@ export default function Caminadores({
     setSelectedDensidad("");
     setSelectedReposicion("");
     setSelectedObservaciones("");
+    setUbicacion("");
   };
 
   return (
@@ -48,6 +50,12 @@ export default function Caminadores({
           placeholder="Caja N°:"
           value={selectedCaja}
           onChangeText={(text) => setSelectedCaja(text)}
+        />
+        <TextInput
+          style={styles.input}
+          placeholder="Ubicación:"
+          value={ubicacion}
+          onChangeText={(text) => setUbicacion(text)}
         />
         <Dropdown
           data={densidad}
@@ -89,12 +97,18 @@ export default function Caminadores({
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              if (!selectedCaja || !selectedDensidad || !selectedReposicion) {
+              if (
+                !selectedCaja ||
+                !ubicacion ||
+                !selectedDensidad ||
+                !selectedReposicion
+              ) {
                 alert("Por favor, complete todos los campos");
                 return;
               } else {
                 const newEntry = {
                   Caja: selectedCaja,
+                  Ubicación: ubicacion,
                   Densidad: selectedDensidad,
                   Reposición: selectedReposicion,
                   Observaciones: selectedObservaciones,
@@ -133,6 +147,9 @@ export default function Caminadores({
           <View style={[styles.containerData, styles.headerData]}>
             <Text style={[styles.titledatoscajas, styles.column]}>Caja N°</Text>
             <Text style={[styles.titledatoscajas, styles.column]}>
+              Ubicación
+            </Text>
+            <Text style={[styles.titledatoscajas, styles.column]}>
               Densidad
             </Text>
             <Text style={[styles.titledatoscajas, styles.column]}>
@@ -146,6 +163,9 @@ export default function Caminadores({
             <View style={styles.containerData} key={index}>
               <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Caja}
+              </Text>
+              <Text style={[styles.datoscajas, styles.column]}>
+                {entry.Ubicación}
               </Text>
               <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Densidad}
