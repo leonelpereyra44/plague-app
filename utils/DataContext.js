@@ -8,7 +8,7 @@ export const useData = () => {
 
 export const DataProvider = ({ children }) => {
   const [voladoresData, setVoladoresData] = useState([]);
-  const [caminadoresData, setCaminadoresData] = useState([]);
+  const [rastrerosData, setRastrerosData] = useState([]);
   const [roedoresData, setRoedoresData] = useState([]);
   const [productosData, setProductosData] = useState([]);
   const [clienteData, setClienteData] = useState([]);
@@ -20,8 +20,8 @@ export const DataProvider = ({ children }) => {
       value={{
         voladoresData,
         setVoladoresData,
-        caminadoresData,
-        setCaminadoresData,
+        rastrerosData,
+        setRastrerosData,
         roedoresData,
         setRoedoresData,
         productosData,

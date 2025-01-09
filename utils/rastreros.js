@@ -9,10 +9,10 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown"; // Usamos Dropdown directamente.
 
-export default function Caminadores({
+export default function Rastreros({
   onClose,
-  caminadoresData,
-  setCaminadoresData,
+  rastrerosData,
+  setRastrerosData,
 }) {
 
   // const densidad = [
@@ -109,7 +109,7 @@ export default function Caminadores({
                   // Reposición: selectedReposicion,
                   Observaciones: selectedObservaciones,
                 };
-                setCaminadoresData((prevData) => {
+                setRastrerosData((prevData) => {
                   const updatedData = [...prevData, newEntry];
                   updatedData.sort((a, b) => a.Caja - b.Caja);
                   return updatedData;
@@ -124,8 +124,8 @@ export default function Caminadores({
           <TouchableOpacity
             style={styles.buttonSecondary}
             onPress={() => {
-              if (caminadoresData.length > 0) {
-                setCaminadoresData((prev) => prev.slice(0, -1));
+              if (rastrerosData.length > 0) {
+                setRastrerosData((prev) => prev.slice(0, -1));
                 alert("Último registro eliminado");
               } else {
                 alert("No hay registros para eliminar");
@@ -138,7 +138,7 @@ export default function Caminadores({
         </View>
       </View>
       {/* Tarjeta para visualizar los datos */}
-      {caminadoresData.length > 0 && (
+      {rastrerosData.length > 0 && (
         <View style={styles.spreadsheet}>
           <View style={[styles.containerData, styles.headerData]}>
             {/* <Text style={[styles.titledatoscajas, styles.column]}>Caja N°</Text> */}
@@ -155,7 +155,7 @@ export default function Caminadores({
               Observaciones
             </Text>
           </View>
-          {caminadoresData.map((entry, index) => (
+          {rastrerosData.map((entry, index) => (
             <View style={styles.containerData} key={index}>
               {/* <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Caja}

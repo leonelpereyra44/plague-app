@@ -20,7 +20,7 @@ export default function Exportar({
   clienteData,
   productosData,
   roedoresData,
-  caminadoresData,
+  rastrerosData,
   voladoresData,
 }) {
   // Lista de usuarios con sus firmas
@@ -82,7 +82,7 @@ export default function Exportar({
     { title: "Empresa", data: clienteData || [] },
     { title: "Productos", data: productosData || [] },
     { title: "Roedores", data: roedoresData || [] },
-    { title: "Caminadores", data: caminadoresData || [] },
+    { title: "Rastreros", data: rastrerosData || [] },
     { title: "Voladores", data: voladoresData || [] },
     { title: "Observaciones", data: [{ observaciones }] },
   ];

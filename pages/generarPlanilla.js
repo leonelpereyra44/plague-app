@@ -10,7 +10,7 @@ import {
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../utils/DataContext";
 import Voladores from "../utils/voladores";
-import Caminadores from "../utils/caminadores";
+import Rastreros from "../utils/rastreros";
 import Roedores from "../utils/roedores";
 import Productos from "../utils/productos";
 import Cliente from "../utils/cliente";
@@ -20,7 +20,7 @@ export default function GenerarPlanilla() {
   const insets = useSafeAreaInsets();
 
   const [showVoladores, setShowVoladores] = useState(false);
-  const [showCaminadores, setShowCaminadores] = useState(false);
+  const [showRastreros, setShowRastreros] = useState(false);
   const [showRoedores, setShowRoedores] = useState(false);
   const [showProductos, setShowProductos] = useState(false);
   const [showCliente, setShowCliente] = useState(false);
@@ -31,8 +31,8 @@ export default function GenerarPlanilla() {
   const {
     voladoresData,
     setVoladoresData,
-    caminadoresData,
-    setCaminadoresData,
+    rastrerosData,
+    setRastrerosData,
     roedoresData,
     setRoedoresData,
     productosData,
@@ -46,7 +46,7 @@ export default function GenerarPlanilla() {
   const DesplegarSeccion = (seccion) => {
     const secciones = {
       voladores: setShowVoladores,
-      caminadores: setShowCaminadores,
+      rastreros: setShowRastreros,
       roedores: setShowRoedores,
       productos: setShowProductos,
       cliente: setShowCliente,
@@ -89,9 +89,9 @@ export default function GenerarPlanilla() {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.touchable}
-                onPress={() => DesplegarSeccion("caminadores")}
+                onPress={() => DesplegarSeccion("rastreros")}
               >
-                <Text style={styles.textTouchable}>Caminadores</Text>
+                <Text style={styles.textTouchable}>Rastreros</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.touchable}
@@ -131,11 +131,11 @@ export default function GenerarPlanilla() {
               setVoladoresData={setVoladoresData}
             />
           )}
-          {showCaminadores && (
-            <Caminadores
-              onClose={() => setShowCaminadores(false)}
-              caminadoresData={caminadoresData}
-              setCaminadoresData={setCaminadoresData}
+          {showRastreros && (
+            <Rastreros
+              onClose={() => setShowRastreros(false)}
+              rastrerosData={rastrerosData}
+              setRastrerosData={setRastrerosData}
             />
           )}
           {showRoedores && (
@@ -158,7 +158,7 @@ export default function GenerarPlanilla() {
               clienteData={clienteData}
               productosData={productosData}
               voladoresData={voladoresData}
-              caminadoresData={caminadoresData}
+              rastrerosData={rastrerosData}
               roedoresData={roedoresData}
               exportarData={exportarData}
               setExportarData={setExportarData}
