@@ -119,7 +119,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
   if (loading) {
     return (
       <View style={styles.container}>
-        <Text style={{ color: "white" }}>Cargando productos...</Text>
+        <Text style={{ color: "white" }}>Cargando clientes...</Text>
       </View>
     );
   }

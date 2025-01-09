@@ -96,7 +96,6 @@ export default function Exportar({
       let htmlContent = `<h1 style="text-align:center; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>`;
 
       dataSections.forEach(({ title, data }) => {
-        // Solo agregar sección si hay datos
         if (data.length > 0) {
           htmlContent += `<h2 style="text-align:left; color: #333;">${title}</h2>`;
           htmlContent += `<table style="width: 100%; border-collapse: collapse; font-size: 12px;">`;
@@ -123,7 +122,6 @@ export default function Exportar({
       const selectedUser = usuarioData[0];
       const { nombre, habilitacion, cargo } = selectedUser;
 
-      // Agregar la sección de firmas
       htmlContent += `
         <div style="margin-top: 40px; text-align: center;">
           <div style="display: inline-flex; align-items: center; gap: 40px;">
@@ -136,12 +134,34 @@ export default function Exportar({
           </div> 
         </div>`;
 
-      console.log(htmlContent); // Inspecciona el contenido antes de pasarlo a Print
+      // Verifica que clienteData es un objeto y contiene las propiedades
+      const clienteDataObj = clienteData[0] || {}; // Asumiendo que clienteData es un array
+      const {
+        cliente = "ClienteDesconocido",
+        planta = "PlantaDesconocida",
+        fecha = "FechaDesconocida",
+      } = clienteDataObj;
+      const nombreArchivo = `${cliente}-${planta}-${fecha}.pdf`.replace(
+        /\s+/g,
+        "_",
+      );
 
-      // Generar y compartir el PDF
+      console.log(htmlContent);
+
+      // Generar el PDF
       const { uri } = await Print.printToFileAsync({ html: htmlContent });
-      console.log("PDF generado en:", uri);
-      await Sharing.shareAsync(uri);
+      console.log(`PDF generado en: ${uri}`);
+
+      // Renombrar el archivo
+      const newUri = `${FileSystem.documentDirectory}${nombreArchivo}`;
+      await FileSystem.moveAsync({
+        from: uri,
+        to: newUri,
+      });
+      console.log(`PDF renombrado a: ${newUri}`);
+
+      // Compartir el PDF
+      await Sharing.shareAsync(newUri);
     } catch (error) {
       console.error("Error al manejar la exportación:", error);
     }

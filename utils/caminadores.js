@@ -14,29 +14,30 @@ export default function Caminadores({
   caminadoresData,
   setCaminadoresData,
 }) {
-  const densidad = [
-    { label: "Baja", value: "baja" },
-    { label: "Media", value: "media" },
-    { label: "Alta", value: "alta" },
-  ];
 
-  const reposicion = [
-    { label: "No", value: "no" },
-    { label: "Sí", value: "si" },
-  ];
+  // const densidad = [
+  //   { label: "Baja", value: "baja" },
+  //   { label: "Media", value: "media" },
+  //   { label: "Alta", value: "alta" },
+  // ];
+
+  // const reposicion = [
+  //   { label: "No", value: "no" },
+  //   { label: "Sí", value: "si" },
+  // ];
 
   // Estados para manejar los caminadores
-  const [selectedCaja, setSelectedCaja] = useState("");
-  const [selectedDensidad, setSelectedDensidad] = useState("");
-  const [selectedReposicion, setSelectedReposicion] = useState("");
+  // const [selectedCaja, setSelectedCaja] = useState("");
+  // const [selectedDensidad, setSelectedDensidad] = useState("");
+  // const [selectedReposicion, setSelectedReposicion] = useState("");
   const [selectedObservaciones, setSelectedObservaciones] = useState("");
   const [ubicacion, setUbicacion] = useState("");
 
   // Funciones para limpiar los campos
   const Limpiar = () => {
-    setSelectedCaja("");
-    setSelectedDensidad("");
-    setSelectedReposicion("");
+    // setSelectedCaja("");
+    // setSelectedDensidad("");
+    // setSelectedReposicion("");
     setSelectedObservaciones("");
     setUbicacion("");
   };
@@ -45,19 +46,19 @@ export default function Caminadores({
     <ScrollView contentContainerStyle={styles.container}>
       {/* Tarjeta de ingreso de datos */}
       <View style={styles.card}>
-        <TextInput
+        {/* <TextInput
           style={styles.input}
           placeholder="Caja N°:"
           value={selectedCaja}
           onChangeText={(text) => setSelectedCaja(text)}
-        />
+        /> */}
         <TextInput
           style={styles.input}
           placeholder="Ubicación:"
           value={ubicacion}
           onChangeText={(text) => setUbicacion(text)}
         />
-        <Dropdown
+        {/* <Dropdown
           data={densidad}
           maxHeight={200}
           labelField="label"
@@ -71,8 +72,8 @@ export default function Caminadores({
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
-        />
-        <Dropdown
+        /> */}
+        {/* <Dropdown
           data={reposicion}
           maxHeight={200}
           labelField="label"
@@ -86,7 +87,7 @@ export default function Caminadores({
           placeholderStyle={styles.placeholderStyle}
           selectedTextStyle={styles.selectedTextStyle}
           inputSearchStyle={styles.inputSearchStyle}
-        />
+        /> */}
         <TextInput
           style={styles.input}
           placeholder="Observaciones"
@@ -97,20 +98,15 @@ export default function Caminadores({
           <TouchableOpacity
             style={styles.button}
             onPress={() => {
-              if (
-                !selectedCaja ||
-                !ubicacion ||
-                !selectedDensidad ||
-                !selectedReposicion
-              ) {
+              if (!ubicacion) {
                 alert("Por favor, complete todos los campos");
                 return;
               } else {
                 const newEntry = {
-                  Caja: selectedCaja,
+                  // Caja: selectedCaja,
                   Ubicación: ubicacion,
-                  Densidad: selectedDensidad,
-                  Reposición: selectedReposicion,
+                  // Densidad: selectedDensidad,
+                  // Reposición: selectedReposicion,
                   Observaciones: selectedObservaciones,
                 };
                 setCaminadoresData((prevData) => {
@@ -145,34 +141,34 @@ export default function Caminadores({
       {caminadoresData.length > 0 && (
         <View style={styles.spreadsheet}>
           <View style={[styles.containerData, styles.headerData]}>
-            <Text style={[styles.titledatoscajas, styles.column]}>Caja N°</Text>
+            {/* <Text style={[styles.titledatoscajas, styles.column]}>Caja N°</Text> */}
             <Text style={[styles.titledatoscajas, styles.column]}>
               Ubicación
             </Text>
-            <Text style={[styles.titledatoscajas, styles.column]}>
+            {/* <Text style={[styles.titledatoscajas, styles.column]}>
               Densidad
-            </Text>
-            <Text style={[styles.titledatoscajas, styles.column]}>
+            </Text> */}
+            {/* <Text style={[styles.titledatoscajas, styles.column]}>
               Reposición
-            </Text>
+            </Text> */}
             <Text style={[styles.titledatoscajas, styles.column]}>
               Observaciones
             </Text>
           </View>
           {caminadoresData.map((entry, index) => (
             <View style={styles.containerData} key={index}>
-              <Text style={[styles.datoscajas, styles.column]}>
+              {/* <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Caja}
-              </Text>
+              </Text> */}
               <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Ubicación}
               </Text>
-              <Text style={[styles.datoscajas, styles.column]}>
+              {/* <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Densidad}
-              </Text>
-              <Text style={[styles.datoscajas, styles.column]}>
+              </Text> */}
+              {/* <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Reposición}
-              </Text>
+              </Text> */}
               <Text style={[styles.datoscajas, styles.column]}>
                 {entry.Observaciones}
               </Text>
