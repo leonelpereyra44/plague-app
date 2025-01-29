@@ -21,7 +21,10 @@ import GenerarPlanilla from "./pages/generarPlanilla";
 import Clientes from "./pages/clientes";
 import Productos from "./pages/productos";
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8822a0c (agregado funcionalidad productos)
 // Importa el DataProvider
 import { DataProvider } from "./utils/DataContext";
 
@@ -53,7 +56,10 @@ function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonText}>Clientes</Text>
         </TouchableOpacity>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8822a0c (agregado funcionalidad productos)
         <TouchableOpacity
           style={styles.button}
           onPress={() => navigation.navigate("Productos")}
@@ -62,7 +68,10 @@ function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonText}>Productos</Text>
         </TouchableOpacity>
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8822a0c (agregado funcionalidad productos)
       </View>
     </View>
   );
@@ -99,7 +108,10 @@ function AppContent() {
             headerTitleStyle: styles.headerTitle,
           }}
         />
+<<<<<<< HEAD
 
+=======
+>>>>>>> 8822a0c (agregado funcionalidad productos)
         <Stack.Screen
           name="Productos"
           component={Productos}
