@@ -19,6 +19,8 @@ import { createStackNavigator } from "@react-navigation/stack";
 // Importación de pantallas
 import GenerarPlanilla from "./pages/generarPlanilla";
 import Clientes from "./pages/clientes";
+import Productos from "./pages/productos";
+
 
 // Importa el DataProvider
 import { DataProvider } from "./utils/DataContext";
@@ -51,6 +53,16 @@ function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonText}>Clientes</Text>
         </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("Productos")}
+          accessible
+          accessibilityLabel="Productos"
+        >
+          <Text style={styles.buttonText}>Productos</Text>
+        </TouchableOpacity>
+
       </View>
     </View>
   );
@@ -82,6 +94,15 @@ function AppContent() {
         <Stack.Screen
           name="Clientes"
           component={Clientes}
+          options={{
+            headerStyle: styles.header,
+            headerTitleStyle: styles.headerTitle,
+          }}
+        />
+
+        <Stack.Screen
+          name="Productos"
+          component={Productos}
           options={{
             headerStyle: styles.header,
             headerTitleStyle: styles.headerTitle,
