@@ -9,7 +9,7 @@ import {
   Platform,
   Alert,
 } from "react-native";
-import { supabase } from "./database/supabaseClient";
+import { supabase } from "../../utils/database/supabaseClient";
 
 export default function AgregarClientes() {
   const [clienteNombre, setClienteNombre] = useState("");

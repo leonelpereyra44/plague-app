@@ -19,14 +19,7 @@
     "expo": "^52.0.10",
     "expo-file-system": "~18.0.4",
     "expo-image-manipulator": "~13.0.5",
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
     "expo-linear-gradient": "~14.0.1",
->>>>>>> 8822a0c (agregado funcionalidad productos)
-=======
-    "expo-linear-gradient": "~14.0.1",
->>>>>>> 8822a0c (agregado funcionalidad productos)
     "expo-print": "~14.0.2",
     "expo-sharing": "~13.0.0",
     "expo-status-bar": "~2.0.0",
@@ -40,22 +33,7 @@
     "react-native-safe-area-context": "4.12.0",
     "react-native-screens": "~4.1.0",
     "react-native-url-polyfill": "^2.0.0",
-    "xlsx": "^0.18.5",
-<<<<<<< HEAD
-<<<<<<< HEAD
-    "expo-linear-gradient": "~14.0.1"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.25.2",
-    "eslint": "^8.57.0",
-    "eslint-config-expo": "~8.0.1",
-    "eslint-config-prettier": "^9.1.0",
-    "eslint-plugin-prettier": "^5.2.1",
-    "prettier": "^3.4.1"
-=======
-=======
->>>>>>> 8822a0c (agregado funcionalidad productos)
-    "expo-dev-client": "~5.0.10"
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
@@ -63,11 +41,8 @@
     "eslint-config-expo": "~8.0.1",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-prettier": "^5.2.3",
-    "prettier": "^3.4.2"
-<<<<<<< HEAD
->>>>>>> 8822a0c (agregado funcionalidad productos)
-=======
->>>>>>> 8822a0c (agregado funcionalidad productos)
+    "prettier": "^3.4.2",
+    "expo-dev-client": "~5.0.10"
   },
   "private": true
 }

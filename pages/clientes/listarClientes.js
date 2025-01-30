@@ -12,7 +12,7 @@ import {
   Platform,
   ScrollView,
 } from "react-native";
-import { supabase } from "./database/supabaseClient";
+import { supabase } from "../../utils/database/supabaseClient";
 
 export default function ListarClientes() {
   const [clientes, setClientes] = useState([]);

@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../utils/DataContext"; // Asegúrate de importar el contexto
-import ListarProductos from "../utils/listarProductos"; // Importa el componente de productos
-import AgregarProductos from "../utils/agregarProductos";
+import ListarProductos from "./productos/listarProductos"; // Importa el componente de productos
+import AgregarProductos from "./productos/agregarProductos";
 
 export default function Productos() {
   const insets = useSafeAreaInsets();

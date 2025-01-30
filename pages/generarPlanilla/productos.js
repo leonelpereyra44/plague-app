@@ -7,8 +7,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { supabase } from "./database/supabaseClient"; // Importa tu configuración de Supabase
-
+import { supabase } from "../../utils/database/supabaseClient";
 export default function Productos({ productosData, setProductosData }) {
   const [productos, setProductos] = useState([]);
   const [selectedTipo, setSelectedTipo] = useState("");

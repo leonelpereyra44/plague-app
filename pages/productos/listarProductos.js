@@ -15,7 +15,7 @@ import {
   Platform,
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
-import { supabase } from "./database/supabaseClient";
+import { supabase } from "../../utils/database/supabaseClient";
 
 export default function ListarProductos() {
   const [productos, setProductos] = useState([]);
@@ -45,7 +45,7 @@ export default function ListarProductos() {
     if (error) {
       Alert.alert(
         "Error",
-        "No se pudieron cargar los productos: " + error.message
+        "No se pudieron cargar los productos: " + error.message,
       );
     } else {
       setProductos(data || []);
@@ -79,7 +79,7 @@ export default function ListarProductos() {
     if (error) {
       Alert.alert(
         "Error",
-        "No se pudo actualizar el producto: " + error.message
+        "No se pudo actualizar el producto: " + error.message,
       );
     } else {
       Alert.alert("Éxito", "Producto actualizado correctamente.");
@@ -88,12 +88,25 @@ export default function ListarProductos() {
     }
   }
 
+  function confirmarEliminarProducto(id, nombre) {
+    Alert.alert(
+      "CUIDADO!!!",
+      `Está por eliminar el producto: ${nombre}. ¿Está seguro?`,
+      [
+        { text: "Cancelar", style: "cancel" },
+        { text: "Eliminar", onPress: () => eliminarProducto(id) },
+      ],
+    );
+  }
+
   async function eliminarProducto(id) {
     const { error } = await supabase.from("productos").delete().eq("id", id);
     if (error) {
       Alert.alert("Error", "No se pudo eliminar el producto: " + error.message);
     } else {
-      setProductos(productos.filter((producto) => producto.id !== id));
+      setProductos((prevProductos) =>
+        prevProductos.filter((producto) => producto.id !== id),
+      );
       Alert.alert("Éxito", "Producto eliminado correctamente.");
     }
   }
@@ -114,10 +127,9 @@ export default function ListarProductos() {
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
           <Text style={styles.title}>Lista de Productos</Text>
-
           {editingProducto ? (
             <View style={styles.formContainer}>
-              <ScrollView style={styles.form}>
+              <ScrollView>
                 <Text style={styles.label}>Nombre:</Text>
                 <TextInput
                   style={styles.input}
@@ -157,8 +169,6 @@ export default function ListarProductos() {
                   onChangeText={setProductoCertificado}
                 />
               </ScrollView>
-
-              {/* Botones fuera del ScrollView */}
               <View style={styles.buttonContainer}>
                 <TouchableOpacity
                   style={styles.saveButton}
@@ -166,7 +176,6 @@ export default function ListarProductos() {
                 >
                   <Text style={styles.buttonText}>Guardar</Text>
                 </TouchableOpacity>
-
                 <TouchableOpacity
                   style={styles.cancelButton}
                   onPress={() => setEditingProducto(null)}
@@ -175,8 +184,9 @@ export default function ListarProductos() {
                 </TouchableOpacity>
               </View>
             </View>
+          ) : productos.length === 0 ? (
+            <Text style={styles.noData}>No hay productos disponibles</Text>
           ) : (
-            // LISTA DE PRODUCTOS
             <FlatList
               data={productos}
               keyExtractor={(item) => item.id.toString()}
@@ -198,7 +208,9 @@ export default function ListarProductos() {
 
                     <TouchableOpacity
                       style={styles.deleteButton}
-                      onPress={() => eliminarProducto(item.id)}
+                      onPress={() =>
+                        confirmarEliminarProducto(item.id, item.nombre)
+                      }
                     >
                       <Text style={styles.buttonText}>Eliminar</Text>
                     </TouchableOpacity>

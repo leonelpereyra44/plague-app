@@ -9,12 +9,12 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../utils/DataContext";
-import Voladores from "../utils/voladores";
-import Rastreros from "../utils/rastreros";
-import Roedores from "../utils/roedores";
-import Productos from "../utils/productos";
-import Cliente from "../utils/cliente";
-import Exportar from "../utils/exportar";
+import Voladores from "./generarPlanilla/voladores";
+import Rastreros from "./generarPlanilla/rastreros";
+import Roedores from "./generarPlanilla/roedores";
+import Productos from "./generarPlanilla/productos";
+import Cliente from "./generarPlanilla/cliente";
+import Exportar from "./generarPlanilla/exportar";
 
 export default function GenerarPlanilla() {
   const insets = useSafeAreaInsets();

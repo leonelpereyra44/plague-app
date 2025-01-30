@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
-import { supabase } from "./database/supabaseClient";
+import { supabase } from "../../utils/database/supabaseClient";
 
 export default function Cliente({ onClose, clienteData, setClienteData }) {
   const [date, setDate] = useState(new Date()); // Estado para manejar la fecha

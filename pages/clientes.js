@@ -9,8 +9,8 @@ import {
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useData } from "../utils/DataContext"; // Asegúrate de importar el contexto
-import ListarClientes from "../utils/listarClientes"; // Importa el componente de clientes
-import AgregarClientes from "../utils/agregarClientes";
+import ListarClientes from "./clientes/listarClientes"; // Importa el componente de clientes
+import AgregarClientes from "./clientes/agregarClientes";
 
 export default function Clientes() {
   const insets = useSafeAreaInsets();
