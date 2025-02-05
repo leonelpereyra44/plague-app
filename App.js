@@ -15,13 +15,9 @@ import {
 } from "react-native-safe-area-context";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-
-// Importación de pantallas
 import GenerarPlanilla from "./pages/generarPlanilla";
 import Clientes from "./pages/clientes";
 import Productos from "./pages/productos";
-
-// Importa el DataProvider
 import { DataProvider } from "./utils/DataContext";
 
 // Obtener dimensiones de la pantalla

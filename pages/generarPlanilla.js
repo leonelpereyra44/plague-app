@@ -18,15 +18,7 @@ import Exportar from "./generarPlanilla/exportar";
 
 export default function GenerarPlanilla() {
   const insets = useSafeAreaInsets();
-
-  const [showVoladores, setShowVoladores] = useState(false);
-  const [showRastreros, setShowRastreros] = useState(false);
-  const [showRoedores, setShowRoedores] = useState(false);
-  const [showProductos, setShowProductos] = useState(false);
-  const [showCliente, setShowCliente] = useState(false);
-  const [showExportar, setShowExportar] = useState(false);
-  const [showUsuario, setShowUsuario] = useState(false);
-  const [titulo, setTitulo] = useState("Nueva Planilla");
+  const [seccionSeleccionada, setSeccionSeleccionada] = useState("cliente");
 
   const {
     voladoresData,
@@ -43,118 +35,72 @@ export default function GenerarPlanilla() {
     setExportarData,
   } = useData();
 
-  const DesplegarSeccion = (seccion) => {
-    const secciones = {
-      voladores: setShowVoladores,
-      rastreros: setShowRastreros,
-      roedores: setShowRoedores,
-      productos: setShowProductos,
-      cliente: setShowCliente,
-      exportar: setShowExportar,
-      usuario: setShowUsuario,
-    };
-
-    Object.keys(secciones).forEach((key) => {
-      secciones[key](false);
-    });
-
-    secciones[seccion](true);
-    setTitulo(seccion.charAt(0).toUpperCase() + seccion.slice(1));
-  };
-
   return (
     <>
       <StatusBar barStyle="light-content" backgroundColor="#1b3b4f" />
       <View style={[styles.container, { paddingTop: insets.top }]}>
-        {/* Contenedor para el título y el menú */}
-        <View style={styles.header}>
-          <Text style={styles.titulo}>{titulo}</Text>
+        <View>
+          {/* <Text style={styles.titulo}>Generar Planilla</Text> */}
           <ScrollView
-            horizontal={true}
+            horizontal
             showsHorizontalScrollIndicator={false}
             style={styles.scrollMenu}
           >
             <View style={styles.menu}>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => DesplegarSeccion("cliente")}
-              >
-                <Text style={styles.textTouchable}>Cliente</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => DesplegarSeccion("voladores")}
-              >
-                <Text style={styles.textTouchable}>Voladores</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => DesplegarSeccion("rastreros")}
-              >
-                <Text style={styles.textTouchable}>Rastreros</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => DesplegarSeccion("roedores")}
-              >
-                <Text style={styles.textTouchable}>Roedores</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => DesplegarSeccion("productos")}
-              >
-                <Text style={styles.textTouchable}>Productos</Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={styles.touchable}
-                onPress={() => DesplegarSeccion("exportar")}
-              >
-                <Text style={styles.textTouchable}>Exportar a Excel</Text>
-              </TouchableOpacity>
+              {[
+                { label: "Cliente", value: "cliente" },
+                { label: "Voladores", value: "voladores" },
+                { label: "Rastreros", value: "rastreros" },
+                { label: "Roedores", value: "roedores" },
+                { label: "Productos", value: "productos" },
+                { label: "Exportar", value: "exportar" },
+              ].map((item) => (
+                <TouchableOpacity
+                  key={item.value}
+                  style={styles.touchable}
+                  onPress={() => setSeccionSeleccionada(item.value)}
+                >
+                  <Text style={styles.textTouchable}>{item.label}</Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </ScrollView>
         </View>
+
         {/* Contenido desplazable */}
         <ScrollView contentContainerStyle={styles.scrollContainer}>
-          {/* Mostrar u ocultar las secciones correspondientes */}
-          {showCliente && (
+          {seccionSeleccionada === "cliente" && (
             <Cliente
-              onClose={() => setShowCliente(false)}
               clienteData={clienteData}
               setClienteData={setClienteData}
             />
           )}
-          {showVoladores && (
+          {seccionSeleccionada === "voladores" && (
             <Voladores
-              onClose={() => setShowVoladores(false)}
               voladoresData={voladoresData}
               setVoladoresData={setVoladoresData}
             />
           )}
-          {showRastreros && (
+          {seccionSeleccionada === "rastreros" && (
             <Rastreros
-              onClose={() => setShowRastreros(false)}
               rastrerosData={rastrerosData}
               setRastrerosData={setRastrerosData}
             />
           )}
-          {showRoedores && (
+          {seccionSeleccionada === "roedores" && (
             <Roedores
-              onClose={() => setShowRoedores(false)}
               roedoresData={roedoresData}
               setRoedoresData={setRoedoresData}
             />
           )}
-          {showProductos && (
+          {seccionSeleccionada === "productos" && (
             <Productos
-              onClose={() => setShowProductos(false)}
               productosData={productosData}
               setProductosData={setProductosData}
             />
           )}
-          {showExportar && (
+          {seccionSeleccionada === "exportar" && (
             <Exportar
-              onClose={() => setShowExportar(false)}
               clienteData={clienteData}
               productosData={productosData}
               voladoresData={voladoresData}
@@ -175,51 +121,37 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1b3b4f",
   },
-  header: {
-    backgroundColor: "#1b3b4f", // Fondo igual al resto
-    gap: 20,
-    zIndex: 10,
-    elevation: 10,
-    paddingBottom: 10, // Espacio para separar el título del menú
-    marginBottom: 20,
-  },
-  titulo: {
-    fontSize: 30,
-    fontWeight: "700",
-    textAlign: "center",
-    textTransform: "uppercase",
-    color: "#ffffff",
-    backgroundColor: "#2c3e50",
-    margin: 20,
-    paddingVertical: 12,
-    paddingHorizontal: 18,
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: "#4CAF50",
-    marginBottom: 10,
-  },
+  // titulo: {
+  //   fontSize: 22,
+  //   fontWeight: "bold",
+  //   textAlign: "center",
+  //   color: "#ffffff",
+  //   paddingVertical: 10,
+  //   backgroundColor: "#2c3e50",
+  // },
   scrollMenu: {
-    flexDirection: "row", // Asegura que los elementos estén en línea
-    paddingHorizontal: 10, // Espacio para el contenido
+    flexDirection: "row",
+    paddingHorizontal: 10,
+    marginBottom: 10,
   },
   menu: {
     flexDirection: "row",
-    justifyContent: "flex-start", // Los elementos se alinean al inicio
     alignItems: "center",
+    paddingTop: 20,
   },
   scrollContainer: {
-    paddingBottom: 20,
+    padding: 10,
   },
   touchable: {
-    paddingVertical: 14,
-    paddingHorizontal: 20,
+    paddingVertical: 10,
+    paddingHorizontal: 15,
     backgroundColor: "#007AFF",
-    borderRadius: 10,
-    marginHorizontal: 10,
+    borderRadius: 8,
+    marginHorizontal: 5,
     alignItems: "center",
   },
   textTouchable: {
-    fontSize: 16,
+    fontSize: 14,
     color: "#FFFFFF",
     fontWeight: "600",
   },

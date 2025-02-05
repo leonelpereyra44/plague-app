@@ -10,6 +10,7 @@ import {
 import { Dropdown } from "react-native-element-dropdown";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { supabase } from "../../utils/database/supabaseClient";
+import globalStyles from "../../utils/styles/globalStyles";
 
 export default function Cliente({ onClose, clienteData, setClienteData }) {
   const [date, setDate] = useState(new Date()); // Estado para manejar la fecha
@@ -118,7 +119,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.container}>
         <Text style={{ color: "white" }}>Cargando clientes...</Text>
       </View>
     );
@@ -126,8 +127,9 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card}>
+      <View style={globalStyles.form}>
         {/* Tarjeta para el Dropdown de Cliente */}
+        <Text style={globalStyles.title}>Cliente</Text>
         <View>
           <Dropdown
             data={clientes}
@@ -142,10 +144,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
                 console.log("Cliente seleccionado:", item.id);
               }
             }}
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
+            style={globalStyles.dropdown}
             disable={fieldsDisabled}
           />
         </View>
@@ -164,10 +163,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
                 console.log("Planta seleccionada:", item.id);
               }
             }}
-            style={styles.dropdown}
-            placeholderStyle={styles.placeholderStyle}
-            selectedTextStyle={styles.selectedTextStyle}
-            inputSearchStyle={styles.inputSearchStyle}
+            style={globalStyles.dropdown}
             disable={fieldsDisabled}
           />
         </View>
@@ -175,7 +171,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
         {/* Tarjeta para la fecha */}
         <View>
           <TextInput
-            style={styles.input}
+            style={globalStyles.input}
             placeholder="Seleccione una fecha"
             value={fechaDelDia}
             onFocus={() => setShowPicker(true)} // Abre el selector de fecha al enfocar
@@ -193,37 +189,31 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
           )}
         </View>
 
-        <View style={styles.containerAgregar}>
-          <TouchableOpacity style={styles.button} onPress={handleAdd}>
-            <Text style={styles.buttonText}>Agregar</Text>
+        <View style={globalStyles.buttonContainer}>
+          <TouchableOpacity style={globalStyles.saveButton} onPress={handleAdd}>
+            <Text style={globalStyles.buttonText}>Añadir</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.buttonSecondary}
+            style={globalStyles.deleteButton}
             onPress={handleDelete}
           >
-            <Text style={styles.buttonText}>Eliminar</Text>
+            <Text style={globalStyles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
       </View>
       {/* Mostrar los registros (sin cambios en esta parte) */}
       {clienteData.length > 0 && (
-        <View style={styles.spreadsheet}>
-          <View style={[styles.containerData, styles.headerData]}>
-            <Text style={[styles.titledatoscajas, styles.column]}>Cliente</Text>
-            <Text style={[styles.titledatoscajas, styles.column]}>Planta</Text>
-            <Text style={[styles.titledatoscajas, styles.column]}>Fecha</Text>
+        <View style={globalStyles.spreadsheet}>
+          <View style={globalStyles.headerData}>
+            <Text style={globalStyles.headerText}>Cliente</Text>
+            <Text style={globalStyles.headerText}>Planta</Text>
+            <Text style={globalStyles.headerText}>Fecha</Text>
           </View>
           {clienteData.map((entry, index) => (
-            <View style={styles.containerData} key={index}>
-              <Text style={[styles.datosEmpresa, styles.column]}>
-                {entry.cliente}
-              </Text>
-              <Text style={[styles.datosEmpresa, styles.column]}>
-                {entry.planta}
-              </Text>
-              <Text style={[styles.datosEmpresa, styles.column]}>
-                {entry.fecha}
-              </Text>
+            <View style={globalStyles.containerData} key={index}>
+              <Text style={globalStyles.column}>{entry.cliente}</Text>
+              <Text style={globalStyles.column}>{entry.planta}</Text>
+              <Text style={globalStyles.column}>{entry.fecha}</Text>
             </View>
           ))}
         </View>
@@ -232,132 +222,4 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#1b3b4f", // Fondo similar al del logo
-  },
-  containerAgregar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  card: {
-    marginBottom: 20,
-    padding: 20,
-    gap: 20,
-    backgroundColor: "#FFF",
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "#FFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2, // Sombra para Android
-  },
-  placeholderStyle: {
-    fontSize: 16,
-    color: "#90A4AE",
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-    color: "#263238",
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#B0BEC5",
-  },
-  input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#B0BEC5",
-    borderRadius: 8,
-    padding: 12,
-    backgroundColor: "#FFFFFF",
-    fontSize: 16,
-    color: "#263238",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: "#28A745", // Verde para "Agregar"
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  buttonSecondary: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: "#DC3545", // Rojo para "Cerrar"
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  buttonText: {
-    fontSize: 16,
-    color: "#FFF",
-    fontWeight: "bold",
-  },
-  spreadsheet: {
-    marginTop: 20,
-    borderRadius: 8,
-    overflow: "hidden", // Evita que el contenido sobresalga
-  },
-  containerData: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    backgroundColor: "#FFF",
-  },
-  headerData: {
-    backgroundColor: "#007AFF",
-    borderBottomWidth: 2,
-    borderBottomColor: "#005BB5",
-  },
-  titledatoscajas: {
-    fontWeight: "bold",
-    fontSize: 10,
-    textAlign: "center",
-    color: "#FFF",
-  },
-  datosEmpresa: {
-    fontSize: 10,
-    textAlign: "center",
-    color: "#333",
-  },
-  column: {
-    flex: 1,
-    textAlign: "center",
-  },
-});
+const styles = StyleSheet.create({});

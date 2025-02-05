@@ -8,6 +8,8 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { supabase } from "../../utils/database/supabaseClient";
+import globalStyles from "../../utils/styles/globalStyles";
+
 export default function Productos({ productosData, setProductosData }) {
   const [productos, setProductos] = useState([]);
   const [selectedTipo, setSelectedTipo] = useState("");
@@ -92,15 +94,16 @@ export default function Productos({ productosData, setProductosData }) {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.container}>
         <Text>Cargando productos...</Text>
       </View>
     );
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.card}>
+    <ScrollView contentContainerStyle={globalStyles.container}>
+      <View style={globalStyles.form}>
+        <Text style={globalStyles.title}>Productos</Text>
         {/* Dropdown Tipo */}
         <Dropdown
           data={[
@@ -113,9 +116,7 @@ export default function Productos({ productosData, setProductosData }) {
           value={selectedTipo}
           placeholder="Seleccione el tipo de producto"
           onChange={(item) => setSelectedTipo(item.value)}
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
+          style={globalStyles.dropdown}
         />
 
         {/* Dropdown Producto */}
@@ -132,57 +133,38 @@ export default function Productos({ productosData, setProductosData }) {
           value={selectedProducto}
           placeholder="Seleccione el producto"
           onChange={handleProductoChange}
-          style={styles.dropdown}
-          placeholderStyle={styles.placeholderStyle}
-          selectedTextStyle={styles.selectedTextStyle}
+          style={globalStyles.dropdown}
         />
 
-        {/* Botones */}
-        <View
-          style={{
-            flexDirection: "row",
-            justifyContent: "space-around",
-            marginTop: 20,
-          }}
-        >
-          <TouchableOpacity style={styles.button} onPress={handleAdd}>
-            <Text style={styles.buttonText}>Agregar</Text>
+        <View style={globalStyles.buttonContainer}>
+          <TouchableOpacity style={globalStyles.saveButton} onPress={handleAdd}>
+            <Text style={globalStyles.buttonText}>Añadir</Text>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.buttonSecondary}
+            style={globalStyles.deleteButton}
             onPress={handleDelete}
           >
-            <Text style={styles.buttonText}>Eliminar</Text>
+            <Text style={globalStyles.buttonText}>Eliminar</Text>
           </TouchableOpacity>
         </View>
       </View>
       {/* Lista de datos agregados */}
       {productosData?.length > 0 && (
-        <View style={styles.spreadsheet}>
-          <View style={[styles.containerData, styles.headerData]}>
-            <Text style={[styles.titledatos, styles.column]}>Producto</Text>
-            <Text style={[styles.titledatos, styles.column]}>Tipo</Text>
-            <Text style={[styles.titledatos, styles.column]}>
-              Principio Activo
-            </Text>
-            <Text style={[styles.titledatos, styles.column]}>Laboratorio</Text>
-            <Text style={[styles.titledatos, styles.column]}>Certificado</Text>
+        <View style={globalStyles.spreadsheet}>
+          <View style={globalStyles.headerData}>
+            <Text style={globalStyles.headerText}>Producto</Text>
+            <Text style={globalStyles.headerText}>Tipo</Text>
+            <Text style={globalStyles.headerText}>Principio Activo</Text>
+            <Text style={globalStyles.headerText}>Laboratorio</Text>
+            <Text style={globalStyles.headerText}>Certificado</Text>
           </View>
           {productosData.map((entry, index) => (
-            <View style={styles.containerData} key={index}>
-              <Text style={[styles.datos, styles.column]}>
-                {entry.Producto}
-              </Text>
-              <Text style={[styles.datos, styles.column]}>{entry.Tipo}</Text>
-              <Text style={[styles.datos, styles.column]}>
-                {entry.PrincipioActivo}
-              </Text>
-              <Text style={[styles.datos, styles.column]}>
-                {entry.Laboratorio}
-              </Text>
-              <Text style={[styles.datos, styles.column]}>
-                {entry.Certificado}
-              </Text>
+            <View style={globalStyles.containerData} key={index}>
+              <Text style={globalStyles.column}>{entry.Producto}</Text>
+              <Text style={globalStyles.column}>{entry.Tipo}</Text>
+              <Text style={globalStyles.column}>{entry.PrincipioActivo}</Text>
+              <Text style={globalStyles.column}>{entry.Laboratorio}</Text>
+              <Text style={globalStyles.column}>{entry.Certificado}</Text>
             </View>
           ))}
         </View>
@@ -192,131 +174,4 @@ export default function Productos({ productosData, setProductosData }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flexGrow: 1,
-    padding: 20,
-    backgroundColor: "#1b3b4f", // Fondo similar al del logo
-  },
-  card: {
-    marginBottom: 20,
-    padding: 20,
-    gap: 20,
-    backgroundColor: "#FFF",
-    borderRadius: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  containerAgregar: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginTop: 20,
-  },
-  dropdown: {
-    height: 50,
-    borderColor: "#ddd",
-    borderWidth: 1,
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    backgroundColor: "#FFF",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2, // Sombra para Android
-  },
-  placeholderStyle: {
-    fontSize: 16,
-    color: "#aaa",
-  },
-  selectedTextStyle: {
-    fontSize: 16,
-    color: "#333",
-  },
-  inputSearchStyle: {
-    height: 40,
-    fontSize: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-  },
-  input: {
-    height: 50,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    padding: 10,
-    borderRadius: 8,
-    backgroundColor: "#FFF",
-    fontSize: 16,
-    color: "#333",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  button: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: "#28A745", // Verde para "Agregar"
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  buttonSecondary: {
-    paddingVertical: 12,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    backgroundColor: "#DC3545", // Rojo para "Cerrar"
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 3 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-
-  buttonText: {
-    fontSize: 16,
-    color: "#FFF",
-    fontWeight: "bold",
-  },
-  spreadsheet: {
-    marginTop: 20,
-    borderRadius: 8,
-    overflow: "hidden", // Evita que el contenido sobresalga
-  },
-  containerData: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingVertical: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
-    backgroundColor: "#FFF",
-  },
-  headerData: {
-    backgroundColor: "#007AFF",
-    borderBottomWidth: 2,
-    borderBottomColor: "#005BB5",
-  },
-  titledatos: {
-    fontWeight: "bold",
-    fontSize: 10,
-    textAlign: "center",
-    color: "#FFF",
-  },
-  datos: {
-    fontSize: 10,
-    textAlign: "center",
-  },
-  column: {
-    flex: 1,
-    textAlign: "center",
-  },
 });

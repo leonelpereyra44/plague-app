@@ -6,12 +6,11 @@ import {
   ScrollView,
   TouchableOpacity,
   Alert,
-  Image,
 } from "react-native";
 import * as Print from "expo-print";
 import * as FileSystem from "expo-file-system";
 import * as Sharing from "expo-sharing";
-import * as XLSX from "xlsx";
+import { Asset } from "expo-asset";
 import { Dropdown } from "react-native-element-dropdown";
 import { TextInput } from "react-native-gesture-handler";
 
@@ -23,61 +22,82 @@ export default function Exportar({
   rastrerosData,
   voladoresData,
 }) {
-  // Lista de usuarios con sus firmas
+
+  useEffect(() => {
+    async function preloadImages() {
+      await Asset.loadAsync([
+        require("../../assets/sellomariano.jpeg"),
+        require("../../assets/selloagustin.jpeg"),
+      ]);
+    }
+    preloadImages();
+  }, []);
+
   const usuario = [
     {
       label: "Pereyra Mariano",
       nombre: "PEREYRA MARIANO",
       habilitacion: "233/15 - 1257/22",
       cargo: "TECNICO OPERARIO APLICADOR",
-      // dni: "123",
-      // firma: require("./img/sellomariano.jpeg"),
+      firma: require("../../assets/sellomariano.jpeg"),
     },
     {
       label: "Pereyra Agustín",
       nombre: "PEREYRA AGUSTIN",
       habilitacion: "233/15 - 1257/22",
       cargo: "OPERARIO APLICADOR",
-      // dni: "456",
-      // firma: require("./img/selloagustin.jpeg"),
+      firma: require("../../assets/selloagustin.jpeg"),
     },
   ];
-  console.log("Usuarios iniciales:", usuario);
 
   const [selectedUsuario, setSelectedUsuario] = useState("");
   const [isDropdownDisabled, setIsDropdownDisabled] = useState(false);
   const [usuarioData, setUsuarioData] = useState([]);
   const [observaciones, setObservaciones] = useState("");
+  const [firmaBase64, setFirmaBase64] = useState(null);
+
+  const cargarFirma = async (firmaRuta) => {
+    try {
+      const [asset] = await Asset.loadAsync(firmaRuta);
+      const fileUri = `${FileSystem.documentDirectory}${asset.name}`;
+  
+      // Copiar la imagen a un directorio accesible
+      await FileSystem.copyAsync({ from: asset.localUri, to: fileUri });
+  
+      const result = await FileSystem.readAsStringAsync(fileUri, {
+        encoding: FileSystem.EncodingType.Base64,
+      });
+  
+      setFirmaBase64(result);
+    } catch (error) {
+      console.error("Error al cargar la firma en producción:", error);
+    }
+  };
+  
+  
 
   const handleGuardarUsuario = async () => {
-    console.log("Estado de usuario antes de guardar:", usuario);
-    console.log("Usuario seleccionado para guardar:", selectedUsuario);
     if (!selectedUsuario) {
       Alert.alert("Error", "Seleccione un usuario");
       return;
     }
     try {
-      // Buscar el usuario seleccionado
       const selectedUsuarioData = usuario.find(
-        (item) => item.nombre === selectedUsuario, // Comparar con nombre
+        (item) => item.nombre === selectedUsuario,
       );
       if (!selectedUsuarioData) {
         Alert.alert("Error", "El usuario seleccionado no es válido.");
         return;
       }
-      console.log("Usuario seleccionado completo:", selectedUsuarioData);
-      // Guardar el usuario con su firma en el estado
       setUsuarioData([selectedUsuarioData]);
-      // Deshabilitar el dropdown
       setIsDropdownDisabled(true);
-      console.log("Usuario guardado con éxito.");
+      await cargarFirma(selectedUsuarioData.firma); // Cargamos la firma en base64
     } catch (error) {
       console.error("Error al guardar usuario:", error);
       Alert.alert("Error", "No se pudo guardar el usuario.");
     }
   };
 
-  // Definir las secciones de datos
   const dataSections = [
     { title: "Empresa", data: clienteData || [] },
     { title: "Productos", data: productosData || [] },
@@ -87,12 +107,15 @@ export default function Exportar({
     { title: "Observaciones", data: [{ observaciones }] },
   ];
 
-  // Si no hay datos en ninguna sección, mostrar mensaje
   const isEmpty = dataSections.every((section) => section.data.length === 0);
 
   const handleExportToPDF = async () => {
     try {
-      // Construcción del contenido HTML
+      if (!firmaBase64) {
+        Alert.alert("Error", "Firma no cargada");
+        return;
+      }
+
       let htmlContent = `<h1 style="text-align:center; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>`;
 
       dataSections.forEach(({ title, data }) => {
@@ -123,19 +146,12 @@ export default function Exportar({
       const { nombre, habilitacion, cargo } = selectedUser;
 
       htmlContent += `
-        <div style="margin-top: 40px; text-align: center;">
-          <div style="display: inline-flex; align-items: center; gap: 40px;">
-            <div style="text-align: center;">
-              <p style="margin-top: 5px; font-size: 16px; font-weight: bold;">SAN AGUSTIN C.I.P</p>
-              <p style="font-size: 14px;">${nombre}</p>
-              <p style="font-size: 14px;">HAB: ${habilitacion}</p>
-              <p style="margin-top: 5px; font-size: 12px;">${cargo}</p>
-            </div>
-          </div> 
+        
+        <div style="text-align: center; margin-top: 30px;">
+          <img src="data:image/jpeg;base64,${firmaBase64}" alt="Firma" style="width: 200px; height: auto;" />
         </div>`;
 
-      // Verifica que clienteData es un objeto y contiene las propiedades
-      const clienteDataObj = clienteData[0] || {}; // Asumiendo que clienteData es un array
+      const clienteDataObj = clienteData[0] || {};
       const {
         cliente = "ClienteDesconocido",
         planta = "PlantaDesconocida",
@@ -146,77 +162,18 @@ export default function Exportar({
         "_",
       );
 
-      console.log(htmlContent);
-
-      // Generar el PDF
       const { uri } = await Print.printToFileAsync({ html: htmlContent });
-      console.log(`PDF generado en: ${uri}`);
 
-      // Renombrar el archivo
       const newUri = `${FileSystem.documentDirectory}${nombreArchivo}`;
       await FileSystem.moveAsync({
         from: uri,
         to: newUri,
       });
-      console.log(`PDF renombrado a: ${newUri}`);
 
-      // Compartir el PDF
       await Sharing.shareAsync(newUri);
     } catch (error) {
       console.error("Error al manejar la exportación:", error);
     }
-  };
-
-  const handleExportToXLSX = async () => {
-    const sheetData = [];
-
-    // Generar las filas con las secciones y sus datos
-    dataSections.forEach(({ title, data }) => {
-      // Título de la sección
-      sheetData.push([title]);
-      if (data.length > 0) {
-        // Agregar encabezados
-        const headers = Object.keys(data[0]);
-        sheetData.push(headers);
-        // Agregar filas
-        data.forEach((row) => {
-          sheetData.push(headers.map((header) => row[header] || "-"));
-        });
-      } else {
-        // Mensaje si no hay datos
-        sheetData.push(["No hay datos en esta sección."]);
-      }
-      // Agregar una fila vacía entre secciones
-      sheetData.push([]);
-    });
-
-    const worksheet = XLSX.utils.aoa_to_sheet(sheetData);
-    const workbook = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(workbook, worksheet, "Datos Consolidados");
-
-    // Ajustar el ancho de las columnas al contenido
-    const maxWidths = [];
-    sheetData.forEach((row) => {
-      row.forEach((cell, colIndex) => {
-        const cellLength = (cell ? cell.toString() : "").length;
-        maxWidths[colIndex] = Math.max(maxWidths[colIndex] || 0, cellLength);
-      });
-    });
-
-    // Aplicar el ajuste de las columnas al worksheet
-    worksheet["!cols"] = maxWidths.map((width) => ({ wch: width + 2 }));
-
-    const excelData = XLSX.write(workbook, {
-      type: "base64",
-      bookType: "xlsx",
-    });
-    const fileUri = FileSystem.documentDirectory + "Datos_Consolidados.xlsx";
-
-    await FileSystem.writeAsStringAsync(fileUri, excelData, {
-      encoding: FileSystem.EncodingType.Base64,
-    });
-
-    await Sharing.shareAsync(fileUri);
   };
 
   if (isEmpty) {
@@ -264,6 +221,7 @@ export default function Exportar({
             </View>
           ) : null,
         )}
+
         {/* Contenedor observaciones */}
         <View style={styles.observacionesContainer}>
           <TextInput
@@ -275,6 +233,7 @@ export default function Exportar({
             onChangeText={setObservaciones}
           />
         </View>
+
         {/* Contenedor de usuario */}
         <View style={styles.usuarioContainer}>
           <Text style={styles.subtitle}>Seleccione un usuario</Text>
@@ -301,15 +260,10 @@ export default function Exportar({
             </View>
           )}
         </View>
-        {/* Contenedor de Botones */}
-        <View style={styles.buttonContainer}>
-          <TouchableOpacity style={styles.button} onPress={handleExportToPDF}>
-            <Text style={styles.buttonText}>Exportar a PDF</Text>
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.button} onPress={handleExportToXLSX}>
-            <Text style={styles.buttonText}>Exportar a XLSX</Text>
-          </TouchableOpacity>
-        </View>
+
+        <TouchableOpacity style={styles.button} onPress={handleExportToPDF}>
+          <Text style={styles.buttonText}>Exportar a PDF</Text>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.buttonClose} onPress={onClose}>
           <Text style={styles.buttonText}>Cerrar</Text>
         </TouchableOpacity>
