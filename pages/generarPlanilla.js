@@ -121,14 +121,6 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#1b3b4f",
   },
-  // titulo: {
-  //   fontSize: 22,
-  //   fontWeight: "bold",
-  //   textAlign: "center",
-  //   color: "#ffffff",
-  //   paddingVertical: 10,
-  //   backgroundColor: "#2c3e50",
-  // },
   scrollMenu: {
     flexDirection: "row",
     paddingHorizontal: 10,

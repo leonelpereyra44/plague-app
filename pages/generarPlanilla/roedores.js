@@ -184,7 +184,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
         <View style={globalStyles.form}>
           <Text style={globalStyles.title}>Roedores</Text>
 
-          {/* <Text style={styles.label}>Caja N°:</Text> */}
           <TextInput
             style={globalStyles.input}
             onChangeText={handleCajaChange}
@@ -192,7 +191,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             placeholder="Caja N°"
           />
 
-          {/* <Text style={styles.label}>Roedores Vivos:</Text> */}
           <Dropdown
             data={roedoresVivos}
             labelField="label"
@@ -203,7 +201,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             style={globalStyles.dropdown}
           />
 
-          {/* <Text style={styles.label}>Roedores Muertos:</Text> */}
           <Dropdown
             data={roedoresMuertos}
             labelField="label"
@@ -214,7 +211,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             style={globalStyles.dropdown}
           />
 
-          {/* <Text style={styles.label}>Tipo de Trampa:</Text> */}
           <Dropdown
             data={tipoTrampa}
             labelField="label"
@@ -225,7 +221,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             style={globalStyles.dropdown}
           />
 
-          {/* <Text style={styles.label}>Materia Fecal:</Text> */}
           <Dropdown
             data={materiaFecal}
             labelField="label"
@@ -236,7 +231,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             style={globalStyles.dropdown}
           />
 
-          {/* <Text style={styles.label}>Consumo de Cebos:</Text> */}
           <Dropdown
             data={consumoCebos}
             labelField="label"
@@ -247,7 +241,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             style={globalStyles.dropdown}
           />
 
-          {/* <Text style={styles.label}>Reposición:</Text> */}
           <Dropdown
             data={reposicionRoedores}
             labelField="label"
@@ -258,7 +251,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             style={globalStyles.dropdown}
           />
 
-          {/* <Text style={styles.label}>Observaciones:</Text> */}
           <TextInput
             style={globalStyles.input}
             onChangeText={(value) => setObservaciones(value)}
