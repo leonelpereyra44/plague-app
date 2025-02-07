@@ -22,12 +22,13 @@ export default function Exportar({
   rastrerosData,
   voladoresData,
 }) {
-
+  // Precargar imagenes
   useEffect(() => {
     async function preloadImages() {
       await Asset.loadAsync([
         require("../../assets/sellomariano.jpeg"),
         require("../../assets/selloagustin.jpeg"),
+        require("../../assets/logoredondo.png"),
       ]);
     }
     preloadImages();
@@ -56,25 +57,47 @@ export default function Exportar({
   const [observaciones, setObservaciones] = useState("");
   const [firmaBase64, setFirmaBase64] = useState(null);
 
+  const [logoBase64, setLogoBase64] = useState(null);
+
+  useEffect(() => {
+    async function cargarLogo() {
+      try {
+        const [asset] = await Asset.loadAsync(
+          require("../../assets/logoredondo.png"),
+        );
+        const fileUri = `${FileSystem.documentDirectory}${asset.name}`;
+
+        await FileSystem.copyAsync({ from: asset.localUri, to: fileUri });
+
+        const result = await FileSystem.readAsStringAsync(fileUri, {
+          encoding: FileSystem.EncodingType.Base64,
+        });
+
+        setLogoBase64(result);
+      } catch (error) {
+        console.error("Error al cargar el logo:", error);
+      }
+    }
+    cargarLogo();
+  }, []);
+
   const cargarFirma = async (firmaRuta) => {
     try {
       const [asset] = await Asset.loadAsync(firmaRuta);
       const fileUri = `${FileSystem.documentDirectory}${asset.name}`;
-  
+
       // Copiar la imagen a un directorio accesible
       await FileSystem.copyAsync({ from: asset.localUri, to: fileUri });
-  
+
       const result = await FileSystem.readAsStringAsync(fileUri, {
         encoding: FileSystem.EncodingType.Base64,
       });
-  
+
       setFirmaBase64(result);
     } catch (error) {
       console.error("Error al cargar la firma en producción:", error);
     }
   };
-  
-  
 
   const handleGuardarUsuario = async () => {
     if (!selectedUsuario) {
@@ -116,12 +139,22 @@ export default function Exportar({
         return;
       }
 
-      let htmlContent = `<h1 style="text-align:center; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>`;
+      let htmlContent = `
+  <div style="margin: 40px; padding: 20px;">
+
+    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+      <img src="data:image/png;base64,${logoBase64}" alt="Logo" style="width: 100px; height: auto; margin-right: 10px;"/>
+      <h1 style="margin: 0; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>
+    </div>
+
+`;
+
 
       dataSections.forEach(({ title, data }) => {
         if (data.length > 0) {
           htmlContent += `<h2 style="text-align:left; color: #333;">${title}</h2>`;
-          htmlContent += `<table style="width: 100%; border-collapse: collapse; font-size: 12px;">`;
+          htmlContent += `<table style="width: 90%; margin: 0 auto; border-collapse: collapse; font-size: 12px;">`;
+
 
           const headers = Object.keys(data[0]);
           htmlContent += `<tr style="background-color: #f0f0f0;">`;

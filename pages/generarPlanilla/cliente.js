@@ -126,7 +126,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
   }
 
   return (
-    <ScrollView contentContainerStyle={styles.container}>
+    <ScrollView contentContainerStyle={globalStyles.container}>
       <View style={globalStyles.form}>
         {/* Tarjeta para el Dropdown de Cliente */}
         <Text style={globalStyles.title}>Cliente</Text>

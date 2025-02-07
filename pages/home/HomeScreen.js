@@ -4,7 +4,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
 export default function HomeScreen({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>San Agustín</Text>
+      {/* <Text style={styles.title}>San Agustín</Text> */}
       <View style={styles.containerButtons}>
         <TouchableOpacity
           style={styles.button}
@@ -23,6 +23,12 @@ export default function HomeScreen({ navigation }) {
           onPress={() => navigation.navigate("Productos")}
         >
           <Text style={styles.buttonText}>Productos</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("Certificado")}
+        >
+          <Text style={styles.buttonText}>Certificados</Text>
         </TouchableOpacity>
       </View>
     </View>

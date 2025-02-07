@@ -1,35 +1,49 @@
 import React from "react";
+import { Image } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
-import HomeScreen from "../home/HomeScreen"; // Nueva carpeta para Home
-import InformacionScreen from "../informacion/InformacionScreen"; // Nueva pantalla
+import HomeScreen from "../home/HomeScreen";
+import InformacionScreen from "../informacion/InformacionScreen";
 import GenerarPlanilla from "../generarPlanilla";
 import Clientes from "../clientes";
 import Productos from "../productos";
+import Certificado from "../certificado";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
 
-// Pantallas secundarias dentro de un Stack Navigator
+// Ruta del logo
+const logoPath = require("../../assets/cropped_icon.png"); // Asegúrate de que la ruta sea correcta
+
+// Stack Navigator para pantallas secundarias
 function MainStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: "#2ecc71" }, // Cambia el color del header
-        headerTintColor: "#fff", // Cambia el color del texto y botones
-        headerTitleStyle: { fontWeight: "bold" }, // Personaliza el texto del header
+        headerStyle: { backgroundColor: "#2ecc71" },
+        headerTintColor: "#fff",
+        headerTitleStyle: { fontWeight: "bold" },
       }}
     >
       <Stack.Screen
-        name="Home"
+        name="San Agustín"
         component={HomeScreen}
-        options={{ headerShown: false }}
+        options={{
+          headerRight: () => (
+            <Image
+              source={logoPath}
+              style={{ width: 40, height: 40, marginRight: 15 }}
+              resizeMode="contain"
+            />
+          ),
+        }}
       />
       <Stack.Screen name="GenerarPlanilla" component={GenerarPlanilla} />
       <Stack.Screen name="Clientes" component={Clientes} />
       <Stack.Screen name="Productos" component={Productos} />
+      <Stack.Screen name="Certificado" component={Certificado} />
     </Stack.Navigator>
   );
 }
@@ -41,7 +55,7 @@ export default function TabsNavigator() {
       <Tab.Navigator
         screenOptions={({ route }) => ({
           tabBarIcon: ({ color, size }) => {
-            let iconName;
+            let iconName = "alert-circle-outline";
             if (route.name === "Inicio") {
               iconName = "home-outline";
             } else if (route.name === "Información") {
@@ -51,15 +65,31 @@ export default function TabsNavigator() {
           },
           tabBarActiveTintColor: "#2ecc71",
           tabBarInactiveTintColor: "gray",
+          tabBarStyle: { backgroundColor: "black" },
+          headerStyle: { backgroundColor: "#2ecc71" },
+          headerTintColor: "#fff",
+          headerTitleStyle: { fontWeight: "bold" },
         })}
       >
+        <Tab.Screen name="Inicio" component={MainStack} options={{ headerShown: false }} />
         <Tab.Screen
-          name="Inicio"
-          component={MainStack}
-          options={{ headerShown: false }}
+          name="Información"
+          component={InformacionScreen}
+          options={({ navigation }) => ({
+            headerRight: () => (
+              <Ionicons
+                name="information-circle-outline"
+                size={32}
+                color="#fff"
+                style={{ marginRight: 15 }}
+                onPress={() => navigation.navigate("Información")}
+              />
+            ),
+          })}
         />
-        <Tab.Screen name="Información" component={InformacionScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   );
 }
+
+

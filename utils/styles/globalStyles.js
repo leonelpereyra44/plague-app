@@ -87,7 +87,7 @@ const globalStyles = StyleSheet.create({
   form: {
     padding: 20,
     borderRadius: 5,
-    backgroundColor: "#fff",
+    backgroundColor: "lightgray",
   },
   label: {
     fontSize: 14,
