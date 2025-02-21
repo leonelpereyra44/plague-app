@@ -186,6 +186,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
 
           <TextInput
             style={globalStyles.input}
+            keyboardType="numeric"
             onChangeText={handleCajaChange}
             value={cajaRoedores}
             placeholder="Caja N°"

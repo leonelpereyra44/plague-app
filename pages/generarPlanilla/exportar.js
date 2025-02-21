@@ -66,9 +66,7 @@ export default function Exportar({
           require("../../assets/logoredondo.png"),
         );
         const fileUri = `${FileSystem.documentDirectory}${asset.name}`;
-
         await FileSystem.copyAsync({ from: asset.localUri, to: fileUri });
-
         const result = await FileSystem.readAsStringAsync(fileUri, {
           encoding: FileSystem.EncodingType.Base64,
         });

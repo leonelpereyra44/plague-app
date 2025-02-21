@@ -20,6 +20,7 @@ export default function Voladores({
     { label: "Baja", value: "baja" },
     { label: "Media", value: "media" },
     { label: "Alta", value: "alta" },
+    { label: "---", value: "---" },
   ];
 
   const reposicion = [

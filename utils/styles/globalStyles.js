@@ -76,7 +76,6 @@ const globalStyles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 10,
-    borderRadius: 5,
   },
   title: {
     fontSize: 20,
