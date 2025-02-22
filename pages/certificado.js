@@ -25,8 +25,8 @@ export default function Certificado() {
   useEffect(() => {
     async function preloadImages() {
       await Asset.loadAsync([
-        require("../assets/sellomariano.png"),
-        require("../assets/selloagustin.png"),
+        require("../assets/sellomariano2.png"),
+        require("../assets/selloagustin2.png"),
         require("../assets/logoredondo.png"),
       ]);
     }
@@ -45,12 +45,12 @@ export default function Certificado() {
     {
       id: "mariano",
       nombre: "Pereyra Mariano",
-      firma: require("../assets/sellomariano.png"),
+      firma: require("../assets/sellomariano2.png"),
     },
     {
       id: "agustin",
       nombre: "Pereyra Agustín",
-      firma: require("../assets/selloagustin.png"),
+      firma: require("../assets/selloagustin2.png"),
     },
   ];
 
@@ -66,9 +66,12 @@ export default function Certificado() {
 
   const [form, setForm] = useState({
     fecha: "",
+    ciudad: "",
     cliente: "",
     planta: "",
+    direccion: "",
     rubro: "",
+    area: "",
     sector: "",
     tipoTrabajo: "",
     producto: "",
@@ -207,15 +210,32 @@ export default function Certificado() {
   const onChangeDate = (event, selectedDate) => {
     setShowDatePicker(false);
     if (selectedDate) {
-      const options = {
-        weekday: "long",
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      };
+      const day = selectedDate.getDate();
+      const year = selectedDate.getFullYear();
+
+      // Array de meses en español
+      const meses = [
+        "Enero",
+        "Febrero",
+        "Marzo",
+        "Abril",
+        "Mayo",
+        "Junio",
+        "Julio",
+        "Agosto",
+        "Septiembre",
+        "Octubre",
+        "Noviembre",
+        "Diciembre",
+      ];
+      const month = meses[selectedDate.getMonth()];
+
+      // Formatear la fecha como "a los 28 días de enero del 2025"
+      const fechaFormateada = `a los ${day} días de ${month} del ${year}`;
+
       setForm({
         ...form,
-        fecha: selectedDate.toLocaleDateString("es-ES", options),
+        fecha: fechaFormateada,
       });
     }
   };
@@ -230,8 +250,8 @@ export default function Certificado() {
 
       // Cargar la firma en Base64
       await cargarFirma(aplicadorSeleccionado.firma);
-      console.log(require("../assets/sellomariano.png"));
-      console.log(require("../assets/selloagustin.png"));
+      console.log(require("../assets/sellomariano2.png"));
+      console.log(require("../assets/selloagustin2.png"));
     }
   };
 
@@ -245,151 +265,150 @@ export default function Certificado() {
   <html>
     <head>
       <style>
-  body {
-  font-family: 'Georgia', serif;
-  padding: 40px;
-  margin: 40px;
-  line-height: 1.4;
-  border: 2px solid #2c3e50;
-  background-color: #f4f6f9;
-  position: relative;
-  overflow: hidden; /* Para evitar que el texto de la marca de agua afecte el contenido */
-}
+        body {
+          font-family: 'Georgia', serif;
+          padding: 40px;
+          margin: 40px;
+          line-height: 1.4;
+          border: 2px solid #2c3e50;
+          background-color: #f4f6f9;
+          position: relative;
+          overflow: hidden;
+        }
+  
+        .header {
+          text-align: center;
+          padding-bottom: 0px;
+          margin-bottom: 5px;
+          border-bottom: 1px solid #2c3e50;
+        }
 
-body::before {
-  content: "ORIGINAL";
-  font-size: 100px;
-  color: rgba(44, 62, 80, 0.1); /* Color gris claro con transparencia */
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) rotate(-45deg);
-  white-space: nowrap;
-  pointer-events: none; /* Para que no interfiera con el contenido */
-  z-index: 0;
-}
+        .logo-nombre {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 10px;
+        }
 
+        .logo-nombre img {
+          width: 50px;
+          height: auto;
+        }
 
-.header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  border-bottom: 1px solid #2c3e50;
-  padding-bottom: 5px;
-  margin-bottom: 10px;
-}
+        .logo-nombre h1 {
+          font-size: 22px;
+          color: #2c3e50;
+          margin: 0;
+        }
 
-.header img {
-  width: 50px;
-  height: auto;
-}
+        .habilitacion {
+          margin-top: 5px;
+          color: #2c3e50;
+        }
 
-.header h1 {
-  font-size: 22px;
-  color: #2c3e50;
-  margin: 0;
-}
-
-.contact {
-  color: #34495e;
-  font-size: 14px;
-  text-align: center;
-  margin: 5px 0;
-}
-.contact span {
-  font-weight: bold;
-  color: #2c3e50;
-}
-.contact a {
-  color: #2980b9;
-  text-decoration: none;
-}
-.contact a:hover {
-  text-decoration: underline;
-}
-
-
-.title {
-  text-align: center;
-  font-size: 22px;
-  font-weight: bold;
-  color: #2c3e50;
-  text-decoration: underline;
-  margin-bottom: 15px;
-}
-
-p {
-  font-size: 12px;
-  text-align: justify;
-  color: #2c3e50;
-  margin: 5px 0;
-}
-
-.datos {
-  margin-top: 10px;
-  font-size: 12px;
-  border: 1px solid #bdc3c7;
-  padding: 8px;
-  background-color: #ecf0f1;
-  border-radius: 5px;
-}
-
-.datos p {
-  margin: 3px 0;
-}
-
-.firma {
-  text-align: center;
-  margin-top: 15px;
-}
-
-.firma img {
-  width: auto;
-  max-width: 150px;
-  height: auto;
-  display: block;
-  margin: 0 auto;
-  border-top: 1px solid #7f8c8d;
-  padding-top: 5px;
-  margin-top: 10px;
-}
-
-
+        .title {
+          text-align: center;
+          font-size: 22px;
+          font-weight: bold;
+          color: #2c3e50;
+          text-decoration: underline;
+          margin-top: 15px;
+          margin-bottom: 15px;
+        }
+  
+        p {
+          font-size: 12px;
+          text-align: justify;
+          color: #2c3e50;
+          margin: 5px 0;
+        }
+  
+        .datos {
+          margin-top: 10px;
+          font-size: 12px;
+          border: 1px solid #bdc3c7;
+          padding: 8px;
+          background-color: #ecf0f1;
+          border-radius: 5px;
+        }
+  
+        .datos p {
+          margin: 3px 0;
+        }
+  
+        .firma {
+          text-align: center;
+          margin-top: 15px;
+        }
+  
+        .firma img {
+          width: auto;
+          max-width: 150px;
+          height: auto;
+          display: block;
+          margin: 0 auto;
+          border-top: 1px solid #7f8c8d;
+          padding-top: 5px;
+          margin-top: 10px;
+        }
+  
+        .contact {
+          color: #34495e;
+          font-size: 14px;
+          text-align: center;
+          margin: 5px 0;
+        }
+        
+        .contact span {
+          font-weight: bold;
+          color: #2c3e50;
+        }
+        
+        .contact a {
+          color: #2980b9;
+          text-decoration: none;
+        }
+        
+        .contact a:hover {
+          text-decoration: underline;
+        }
       </style>
     </head>
     <body>
       <div class="header">
-        <img src="data:image/png;base64,${logoBase64}" />
-        <h1>SAN AGUSTÍN CIP</h1>
+        <div class="logo-nombre">
+          <img src="data:image/png;base64,${logoBase64}" />
+          <h1>SAN AGUSTÍN CIP</h1>
+        </div>
+        <h4 class="habilitacion">Habilitación Provincial: Nº 233/15 - 1257/22</h4>
       </div>
-
-      <h4 style="text-align: center;">Habilitación Provincial: Nº 233/15 - 1257/22</h2>
-
+  
       <div class="title">CERTIFICADO DE SANEAMIENTO</div>
-
-      <p>En Chacabuco, en el día <strong>${form.fecha}</strong>, en el inmueble ubicado en la ciudad, donde funcionan las instalaciones de la empresa <strong>${form.clienteNombre}</strong> en la planta <strong>${form.planta}</strong>, dedicada al rubro <strong>${form.rubro}</strong>.</p>
-
-      <p>Certifico mediante la presente, que la empresa antes mencionada realizó los trabajos de <strong>${form.tipoTrabajo}</strong> en interior del sector <strong>${form.rubro}</strong> (Sector: <strong>${form.sector}</strong>), utilizando un producto aprobado por SENASA para dicho establecimiento.</p>
-
+  
+      <p>En <strong>${form.ciudad}</strong>, <strong>${form.fecha}</strong>, en el inmueble ubicado en la ciudad, donde funcionan las instalaciones de la empresa <strong>${form.clienteNombre}</strong> en la planta <strong>${form.planta}</strong> ubicada en la dirección <strong>${form.direccion}</strong>, dedicada al rubro <strong>${form.rubro}</strong>.</p>
+  
+      <p>Certifico mediante la presente, que la empresa antes mencionada realizó los trabajos de <strong>${form.tipoTrabajo}</strong>, en el área de <strong>${form.area}</strong> (Sector: <strong>${form.sector}</strong>), utilizando un producto aprobado por SENASA para dicho establecimiento.</p>
+  
       <div class="datos">
         <p><strong>Producto:</strong> ${form.productoNombre}</p>
         <p><strong>Ingrediente Activo:</strong> ${form.principioActivo}</p>
         <p><strong>Familia Química:</strong> ${form.familiaQuimica}</p>
         <p><strong>Dosis:</strong> ${form.dosis}</p>
       </div>
-
+  
       <div class="firma">
         <img src="data:image/jpeg;base64,${firmaBase64}" alt="Firma del Aplicador" />
       </div>
-
+  
       <div class="contact">
         <p><span>Teléfono:</span> 02352-464489 - 02364-419280</p>
         <p><span>Dirección:</span> Quintana 190, Chacabuco, Prov. Buenos Aires, Argentina</p>
+        <p><span>e-mail:</span> san.agustin.cip@hotmail.com</p>
       </div>
     </body>
   </html>
 `;
+
 
     try {
       const sanitizedFileName =
@@ -444,6 +463,16 @@ p {
               onChange={onChangeDate}
             />
           )}
+          {/* <Text>Ciudad:</Text> */}
+          <TextInput
+            value={form.ciudad}
+            placeholder="Ciudad:"
+            editable={true}
+            style={globalStyles.input}
+            onChangeText={(text) =>
+              setForm((prevForm) => ({ ...prevForm, ciudad: text }))
+            }
+          />
           {/* <Text>Nombre del Cliente:</Text> */}
           <Dropdown
             data={clientes}
@@ -464,6 +493,16 @@ p {
             onChange={(item) => handlePlantaChange(item.id)}
             style={globalStyles.dropdown}
           />
+          {/* <Text>Dirección:</Text> */}
+          <TextInput
+            value={form.direccion}
+            placeholder="Dirección:"
+            editable={true}
+            style={globalStyles.input}
+            onChangeText={(text) =>
+              setForm((prevForm) => ({ ...prevForm, direccion: text }))
+            }
+          />
           {/* <Text>Rubro:</Text> */}
           <TextInput
             value={form.rubro}
@@ -474,6 +513,17 @@ p {
               setForm((prevForm) => ({ ...prevForm, rubro: text }))
             }
           />
+          {/* <Text>Área:</Text> */}
+          <TextInput
+            value={form.area}
+            placeholder="Área:"
+            editable={true}
+            style={globalStyles.input}
+            onChangeText={(text) =>
+              setForm((prevForm) => ({ ...prevForm, area: text }))
+            }
+          />
+
           {/* <Text>Sector:</Text> */}
           <TextInput
             value={form.sector}
