@@ -20,12 +20,15 @@ export default function Voladores({
     { label: "Baja", value: "baja" },
     { label: "Media", value: "media" },
     { label: "Alta", value: "alta" },
-    { label: "---", value: "---" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const reposicion = [
     { label: "No", value: "no" },
     { label: "Sí", value: "si" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const [selectedCajaUv, setSelectedCajaUv] = useState("");

@@ -8,6 +8,7 @@ import {
   FlatList,
   Alert,
   TouchableOpacity,
+  Modal,
   KeyboardAvoidingView,
   ScrollView,
   TouchableWithoutFeedback,
@@ -16,6 +17,7 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import { supabase } from "../../utils/database/supabaseClient";
+import globalStyles from "../../utils/styles/globalStyles";
 
 export default function ListarProductos() {
   const [productos, setProductos] = useState([]);
@@ -26,6 +28,7 @@ export default function ListarProductos() {
   const [productoPrincipioActivo, setProductoPrincipioActivo] = useState("");
   const [productoLaboratorio, setProductoLaboratorio] = useState("");
   const [productoCertificado, setProductoCertificado] = useState("");
+  const [modalVisible, setModalVisible] = useState(false);
 
   const tipoOptions = [
     { label: "ROEDORES", value: "ROEDORES" },
@@ -60,6 +63,7 @@ export default function ListarProductos() {
     setProductoPrincipioActivo(producto.principio_activo);
     setProductoLaboratorio(producto.laboratorio);
     setProductoCertificado(producto.certificado);
+    setModalVisible(true);
   }
 
   async function guardarEdicion() {
@@ -83,7 +87,7 @@ export default function ListarProductos() {
       );
     } else {
       Alert.alert("Éxito", "Producto actualizado correctamente.");
-      setEditingProducto(null);
+      setModalVisible(false);
       fetchProductos();
     }
   }
@@ -113,115 +117,104 @@ export default function ListarProductos() {
 
   if (loading) {
     return (
-      <View style={styles.container}>
+      <View style={globalStyles.container}>
         <ActivityIndicator size="large" color="#0000ff" />
       </View>
     );
   }
 
   return (
-    <KeyboardAvoidingView
-      behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={styles.container}
-    >
-      <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.container}>
-          <Text style={styles.title}>Lista de Productos</Text>
-          {editingProducto ? (
-            <View style={styles.formContainer}>
-              <ScrollView>
-                <Text style={styles.label}>Nombre:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={productoNombre}
-                  onChangeText={setProductoNombre}
-                />
+    <View style={globalStyles.container}>
+      <FlatList
+        data={productos}
+        keyExtractor={(item) => item.id.toString()}
+        renderItem={({ item }) => (
+          <View style={styles.item}>
+            <Text style={styles.nombre}>{item.nombre}</Text>
+            <Text style={styles.textoItem}>Tipo: {item.tipo}</Text>
+            <Text style={styles.textoItem}>
+              Principio Activo: {item.principio_activo}
+            </Text>
+            <Text style={styles.textoItem}>
+              Laboratorio: {item.laboratorio}
+            </Text>
+            <Text style={styles.textoItem}>
+              Certificado: {item.certificado}
+            </Text>
 
-                <Text style={styles.label}>Tipo:</Text>
-                <Dropdown
-                  style={styles.dropdown}
-                  data={tipoOptions}
-                  labelField="label"
-                  valueField="value"
-                  placeholder="Seleccione un tipo"
-                  value={productoTipo}
-                  onChange={(item) => setProductoTipo(item.value)}
-                />
-
-                <Text style={styles.label}>Principio Activo:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={productoPrincipioActivo}
-                  onChangeText={setProductoPrincipioActivo}
-                />
-
-                <Text style={styles.label}>Laboratorio:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={productoLaboratorio}
-                  onChangeText={setProductoLaboratorio}
-                />
-
-                <Text style={styles.label}>Certificado:</Text>
-                <TextInput
-                  style={styles.input}
-                  value={productoCertificado}
-                  onChangeText={setProductoCertificado}
-                />
-              </ScrollView>
-              <View style={styles.buttonContainer}>
-                <TouchableOpacity
-                  style={styles.saveButton}
-                  onPress={guardarEdicion}
-                >
-                  <Text style={styles.buttonText}>Guardar</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  style={styles.cancelButton}
-                  onPress={() => setEditingProducto(null)}
-                >
-                  <Text style={styles.buttonText}>Cancelar</Text>
-                </TouchableOpacity>
-              </View>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.editButton}
+                onPress={() => handleEditarProducto(item)}
+              >
+                <Text style={styles.buttonText}>Editar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.deleteButton}
+                onPress={() => confirmarEliminarProducto(item.id, item.nombre)}
+              >
+                <Text style={styles.buttonText}>Eliminar</Text>
+              </TouchableOpacity>
             </View>
-          ) : productos.length === 0 ? (
-            <Text style={styles.noData}>No hay productos disponibles</Text>
-          ) : (
-            <FlatList
-              data={productos}
-              keyExtractor={(item) => item.id.toString()}
-              renderItem={({ item }) => (
-                <View style={styles.item}>
-                  <Text style={styles.nombre}>{item.nombre}</Text>
-                  <Text>Tipo: {item.tipo}</Text>
-                  <Text>Principio Activo: {item.principio_activo}</Text>
-                  <Text>Laboratorio: {item.laboratorio}</Text>
-                  <Text>Certificado: {item.certificado}</Text>
+          </View>
+        )}
+      />
 
-                  <View style={styles.buttonContainer}>
-                    <TouchableOpacity
-                      style={styles.editButton}
-                      onPress={() => handleEditarProducto(item)}
-                    >
-                      <Text style={styles.buttonText}>Editar</Text>
-                    </TouchableOpacity>
-
-                    <TouchableOpacity
-                      style={styles.deleteButton}
-                      onPress={() =>
-                        confirmarEliminarProducto(item.id, item.nombre)
-                      }
-                    >
-                      <Text style={styles.buttonText}>Eliminar</Text>
-                    </TouchableOpacity>
-                  </View>
-                </View>
-              )}
+      <Modal visible={modalVisible} animationType="slide" transparent>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.title}>Editar Producto</Text>
+            <TextInput
+              style={styles.input}
+              value={productoNombre}
+              onChangeText={setProductoNombre}
+              placeholder="Nombre"
             />
-          )}
+            <Dropdown
+              style={styles.dropdown}
+              data={tipoOptions}
+              labelField="label"
+              valueField="value"
+              placeholder="Seleccione un tipo"
+              value={productoTipo}
+              onChange={(item) => setProductoTipo(item.value)}
+            />
+            <TextInput
+              style={styles.input}
+              value={productoPrincipioActivo}
+              onChangeText={setProductoPrincipioActivo}
+              placeholder="Principio Activo"
+            />
+            <TextInput
+              style={styles.input}
+              value={productoLaboratorio}
+              onChangeText={setProductoLaboratorio}
+              placeholder="Laboratorio"
+            />
+            <TextInput
+              style={styles.input}
+              value={productoCertificado}
+              onChangeText={setProductoCertificado}
+              placeholder="Certificado"
+            />
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={guardarEdicion}
+              >
+                <Text style={styles.buttonText}>Guardar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={styles.cancelButton}
+                onPress={() => setModalVisible(false)}
+              >
+                <Text style={styles.buttonText}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
-      </TouchableWithoutFeedback>
-    </KeyboardAvoidingView>
+      </Modal>
+    </View>
   );
 }
 
@@ -240,10 +233,15 @@ const styles = StyleSheet.create({
     padding: 10,
     borderBottomWidth: 1,
     borderBottomColor: "#ddd",
+    color: "#fff",
   },
   nombre: {
     fontSize: 16,
     fontWeight: "bold",
+    color: "#fff",
+  },
+  textoItem: {
+    color: "#fff",
   },
   buttonContainer: {
     flexDirection: "row",
@@ -279,13 +277,6 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
   },
-  form: {
-    padding: 5,
-    borderWidth: 1,
-    borderColor: "#ddd",
-    borderRadius: 5,
-    backgroundColor: "#f9f9f9",
-  },
   label: {
     fontSize: 14,
     fontWeight: "bold",
@@ -307,5 +298,17 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     backgroundColor: "#fff",
     marginBottom: 10,
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0,0,0,0.5)",
+  },
+  modalContent: {
+    width: "90%",
+    backgroundColor: "white",
+    padding: 20,
+    borderRadius: 10,
   },
 });

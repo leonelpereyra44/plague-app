@@ -20,18 +20,17 @@ export default function Clientes() {
 
   const [showClientes, setShowClientes] = useState(false); // Estado para mostrar los clientes
   const [showAgregarClientes, setShowAgregarClientes] = useState(false); // Estado para mostrar el formulario de agregar clientes
-  const [titulo, setTitulo] = useState("Clientes"); // Estado para manejar el título de la planilla
 
   const DesplegarClientes = () => {
     setShowClientes((prev) => !prev); // Cambia el estado de mostrar clientes
     setShowAgregarClientes(false); // Oculta el formulario de agregar clientes
-    setTitulo("Clientes"); // Cambia el título de la planilla
+    
   };
 
   const DesplegarAgregarClientes = () => {
     setShowAgregarClientes((prev) => !prev); // Cambia el estado de mostrar clientes
     setShowClientes(false); // Oculta la lista de clientes
-    setTitulo("Agregar Cliente"); // Cambia el título de la planilla
+    
   }
 
   return (
@@ -40,9 +39,6 @@ export default function Clientes() {
       <View style={[styles.container, { paddingTop: insets.top }]}>
         {/* Contenedor para el título y el menú */}
         <View style={styles.header}>
-          <Text style={styles.titulo} numberOfLines={1} ellipsizeMode="tail">
-            {titulo}
-          </Text>
           <ScrollView
             horizontal={true}
             showsHorizontalScrollIndicator={false}

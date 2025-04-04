@@ -95,9 +95,9 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
 
     // Crear el nuevo registro
     const newEntry = {
-      cliente: clienteNombre,
-      planta: plantaNombre,
-      fecha: fechaDelDia,
+      Cliente: clienteNombre,
+      Planta: plantaNombre,
+      Fecha: fechaDelDia,
     };
 
     // Actualizar clienteData con el nuevo registro
@@ -211,9 +211,9 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
           </View>
           {clienteData.map((entry, index) => (
             <View style={globalStyles.containerData} key={index}>
-              <Text style={globalStyles.column}>{entry.cliente}</Text>
-              <Text style={globalStyles.column}>{entry.planta}</Text>
-              <Text style={globalStyles.column}>{entry.fecha}</Text>
+              <Text style={globalStyles.column}>{entry.Cliente}</Text>
+              <Text style={globalStyles.column}>{entry.Planta}</Text>
+              <Text style={globalStyles.column}>{entry.Fecha}</Text>
             </View>
           ))}
         </View>

@@ -139,12 +139,11 @@ export default function Exportar({
 
       let htmlContent = `
   <div style="margin: 40px; padding: 20px;">
-
     <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
       <img src="data:image/png;base64,${logoBase64}" alt="Logo" style="width: 100px; height: auto; margin-right: 10px;"/>
       <h1 style="margin: 0; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>
     </div>
-
+  </div>
 `;
 
 
@@ -172,6 +171,14 @@ export default function Exportar({
           htmlContent += `</table>`;
         }
       });
+      htmlContent += `
+      <div style="margin-top: 20px; padding: 2px; border: 1px solid #ccc; border-radius: 5px; width: 90%; margin-left: auto; margin-right: auto; background-color: #f9f9f9;">
+    <ul style="font-size: 12px; padding-left: 20px; color: #333; list-style-type: none;">
+      <li><strong>R.P</strong>: Refuerzo Provisorio</li>
+      <li><strong>N.A</strong>: No Aplica</li>
+    </ul>
+  </div>
+  `;
 
       const selectedUser = usuarioData[0];
       const { nombre, habilitacion, cargo } = selectedUser;
@@ -184,11 +191,11 @@ export default function Exportar({
 
       const clienteDataObj = clienteData[0] || {};
       const {
-        cliente = "ClienteDesconocido",
-        planta = "PlantaDesconocida",
-        fecha = "FechaDesconocida",
+        Cliente = "ClienteDesconocido",
+        Planta = "PlantaDesconocida",
+        Fecha = "FechaDesconocida",
       } = clienteDataObj;
-      const nombreArchivo = `${cliente}-${planta}-${fecha}.pdf`.replace(
+      const nombreArchivo = `${Cliente}-${Planta}-${Fecha}.pdf`.replace(
         /\s+/g,
         "_",
       );

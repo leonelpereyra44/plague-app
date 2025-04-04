@@ -28,8 +28,16 @@ export default function AgregarProductos() {
   ];
 
   const agregarProducto = async () => {
-    if (!productoNombre || !productoTipo || !productoPrincipioActivo || !productoLaboratorio) {
-      Alert.alert("Error", "Los campos Nombre, Tipo, Principio Activo y Laboratorio son obligatorios");
+    if (
+      !productoNombre ||
+      !productoTipo ||
+      !productoPrincipioActivo ||
+      !productoLaboratorio
+    ) {
+      Alert.alert(
+        "Error",
+        "Los campos Nombre, Tipo, Principio Activo y Laboratorio son obligatorios",
+      );
       return;
     }
 
@@ -106,7 +114,10 @@ export default function AgregarProductos() {
           </ScrollView>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.saveButton} onPress={agregarProducto}>
+            <TouchableOpacity
+              style={styles.saveButton}
+              onPress={agregarProducto}
+            >
               <Text style={styles.buttonText}>Guardar</Text>
             </TouchableOpacity>
           </View>
@@ -173,4 +184,3 @@ const styles = StyleSheet.create({
     textAlign: "center",
   },
 });
-

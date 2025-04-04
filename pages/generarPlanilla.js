@@ -40,7 +40,6 @@ export default function GenerarPlanilla() {
       <StatusBar barStyle="light-content" backgroundColor="#1b3b4f" />
       <View style={[styles.container, { paddingTop: insets.top }]}>
         <View>
-          {/* <Text style={styles.titulo}>Generar Planilla</Text> */}
           <ScrollView
             horizontal
             showsHorizontalScrollIndicator={false}
@@ -129,7 +128,7 @@ const styles = StyleSheet.create({
   menu: {
     flexDirection: "row",
     alignItems: "center",
-    paddingTop: 20,
+    paddingTop: 10,
   },
   scrollContainer: {
     padding: 10,

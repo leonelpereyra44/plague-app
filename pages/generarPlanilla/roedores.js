@@ -15,16 +15,22 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
   const roedoresVivos = [
     { label: "Si", value: "si" },
     { label: "No", value: "no" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const roedoresMuertos = [
     { label: "Si", value: "si" },
     { label: "No", value: "no" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const materiaFecal = [
     { label: "Si", value: "si" },
     { label: "No", value: "no" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const tipoTrampa = [
@@ -32,16 +38,22 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
     { label: "Trampa", value: "Trampa" },
     { label: "Cebo", value: "Cebo" },
     { label: "Otra", value: "Otra" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const consumoCebos = [
     { label: "Si", value: "si" },
     { label: "No", value: "no" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const reposicionRoedores = [
     { label: "Si", value: "si" },
     { label: "No", value: "no" },
+    { label: "N.A", value: "N.A" },
+    { label: "R.P", value: "R.P" },
   ];
 
   const [cajaRoedores, setCajaRoedores] = useState("");
