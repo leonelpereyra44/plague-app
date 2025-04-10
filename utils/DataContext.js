@@ -14,6 +14,11 @@ export const DataProvider = ({ children }) => {
   const [clienteData, setClienteData] = useState([]);
   const [exportarData, setExportarData] = useState([]);
   const [usuarioData, setUsuarioData] = useState([]);
+  const [contadores, setContadores] = useState({
+    vivos: 0,
+    muertos: 0,
+    consumo: 0,
+  });
 
   return (
     <DataContext.Provider
@@ -32,6 +37,8 @@ export const DataProvider = ({ children }) => {
         setExportarData,
         usuarioData,
         setUsuarioData,
+        contadores,
+        setContadores,
       }}
     >
       {children}

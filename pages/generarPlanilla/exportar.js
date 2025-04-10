@@ -13,6 +13,8 @@ import * as Sharing from "expo-sharing";
 import { Asset } from "expo-asset";
 import { Dropdown } from "react-native-element-dropdown";
 import { TextInput } from "react-native-gesture-handler";
+import { useData } from "../../utils/DataContext";
+import { supabase } from "../../utils/database/supabaseClient";
 
 export default function Exportar({
   onClose,
@@ -56,8 +58,8 @@ export default function Exportar({
   const [usuarioData, setUsuarioData] = useState([]);
   const [observaciones, setObservaciones] = useState("");
   const [firmaBase64, setFirmaBase64] = useState(null);
-
   const [logoBase64, setLogoBase64] = useState(null);
+  const { contadores } = useData();
 
   useEffect(() => {
     async function cargarLogo() {
@@ -130,89 +132,134 @@ export default function Exportar({
 
   const isEmpty = dataSections.every((section) => section.data.length === 0);
 
+  const generarNombreArchivo = (cliente, planta, fecha) =>
+    `${cliente}-${planta}-${fecha}.pdf`.replace(/\s+/g, "_");
+  
+  const insertarDatosEnSupabase = async ({ planta_id, cliente_id, Fecha, vivos, muertos, consumo }) => {
+    const { data, error } = await supabase.from("controles").insert([
+      {
+        planta_id,
+        cliente_id,
+        fecha: Fecha,
+        cantvivos: vivos,
+        cantmuertos: muertos,
+        cantidadconsumo: consumo,
+      },
+    ]);
+    return { data, error };
+  };
+  
+  const generarTablaHTML = (dataSections) => {
+    let html = "";
+    dataSections.forEach(({ title, data }) => {
+      if (data.length > 0) {
+        const headers = Object.keys(data[0]).filter(
+          (key) => key !== "planta_id" && key !== "cliente_id"
+        );
+  
+        html += `<h2 style="text-align:left; color: #333;">${title}</h2>`;
+        html += `<table style="width: 90%; margin: 0 auto; border-collapse: collapse; font-size: 12px;">`;
+  
+        html += `<tr style="background-color: #f0f0f0;">`;
+        headers.forEach((header) => {
+          html += `<th style="border: 1px solid #ccc; padding: 8px; text-align: center; font-weight: bold;">${header}</th>`;
+        });
+        html += `</tr>`;
+  
+        data.forEach((row) => {
+          html += `<tr>`;
+          headers.forEach((header) => {
+            html += `<td style="border: 1px solid #ccc; padding: 8px; text-align: center;">${row[header] || "-"}</td>`;
+          });
+          html += `</tr>`;
+        });
+  
+        html += `</table>`;
+      }
+    });
+    return html;
+  };
+  
+  const generarHTML = (logoBase64, firmaBase64, dataSections) => {
+    let html = `
+      <div style="margin: 40px; padding: 20px;">
+        <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
+          <img src="data:image/png;base64,${logoBase64}" alt="Logo" style="width: 100px; height: auto; margin-right: 10px;"/>
+          <h1 style="margin: 0; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>
+        </div>
+      </div>
+    `;
+  
+    html += generarTablaHTML(dataSections);
+  
+    html += `
+      <div style="margin-top: 20px; padding: 2px; border: 1px solid #ccc; border-radius: 5px; width: 90%; margin-left: auto; margin-right: auto; background-color: #f9f9f9;">
+        <ul style="font-size: 12px; padding-left: 20px; color: #333; list-style-type: none;">
+          <li><strong>R.P</strong>: Refuerzo Provisorio</li>
+          <li><strong>N.A</strong>: No Aplica</li>
+        </ul>
+      </div>
+      <div style="text-align: center; margin-top: 30px;">
+        <img src="data:image/jpeg;base64,${firmaBase64}" alt="Firma" style="width: 200px; height: auto;" />
+      </div>
+    `;
+  
+    return html;
+  };
+  
+  const guardarYCompartirPDF = async (htmlContent, nombreArchivo) => {
+    const { uri } = await Print.printToFileAsync({ html: htmlContent });
+    const newUri = `${FileSystem.documentDirectory}${nombreArchivo}`;
+    await FileSystem.moveAsync({ from: uri, to: newUri });
+    await Sharing.shareAsync(newUri);
+  };
+  
   const handleExportToPDF = async () => {
     try {
       if (!firmaBase64) {
         Alert.alert("Error", "Firma no cargada");
         return;
       }
-
-      let htmlContent = `
-  <div style="margin: 40px; padding: 20px;">
-    <div style="display: flex; align-items: center; justify-content: center; margin-bottom: 20px;">
-      <img src="data:image/png;base64,${logoBase64}" alt="Logo" style="width: 100px; height: auto; margin-right: 10px;"/>
-      <h1 style="margin: 0; color: black;">Planilla de M.I.P SAN AGUSTIN</h1>
-    </div>
-  </div>
-`;
-
-
-      dataSections.forEach(({ title, data }) => {
-        if (data.length > 0) {
-          htmlContent += `<h2 style="text-align:left; color: #333;">${title}</h2>`;
-          htmlContent += `<table style="width: 90%; margin: 0 auto; border-collapse: collapse; font-size: 12px;">`;
-
-
-          const headers = Object.keys(data[0]);
-          htmlContent += `<tr style="background-color: #f0f0f0;">`;
-          headers.forEach((header) => {
-            htmlContent += `<th style="border: 1px solid #ccc; padding: 8px; text-align: center; font-weight: bold;">${header}</th>`;
-          });
-          htmlContent += `</tr>`;
-
-          data.forEach((row) => {
-            htmlContent += `<tr>`;
-            headers.forEach((header) => {
-              htmlContent += `<td style="border: 1px solid #ccc; padding: 8px; text-align: center;">${row[header] || "-"}</td>`;
-            });
-            htmlContent += `</tr>`;
-          });
-
-          htmlContent += `</table>`;
-        }
-      });
-      htmlContent += `
-      <div style="margin-top: 20px; padding: 2px; border: 1px solid #ccc; border-radius: 5px; width: 90%; margin-left: auto; margin-right: auto; background-color: #f9f9f9;">
-    <ul style="font-size: 12px; padding-left: 20px; color: #333; list-style-type: none;">
-      <li><strong>R.P</strong>: Refuerzo Provisorio</li>
-      <li><strong>N.A</strong>: No Aplica</li>
-    </ul>
-  </div>
-  `;
-
-      const selectedUser = usuarioData[0];
-      const { nombre, habilitacion, cargo } = selectedUser;
-
-      htmlContent += `
-        
-        <div style="text-align: center; margin-top: 30px;">
-          <img src="data:image/jpeg;base64,${firmaBase64}" alt="Firma" style="width: 200px; height: auto;" />
-        </div>`;
-
+  
+      const { vivos, muertos, consumo } = contadores;
       const clienteDataObj = clienteData[0] || {};
       const {
         Cliente = "ClienteDesconocido",
         Planta = "PlantaDesconocida",
-        Fecha = "FechaDesconocida",
+        Fecha = new Date().toISOString().split("T")[0],
+        planta_id = null,
+        cliente_id = null,
       } = clienteDataObj;
-      const nombreArchivo = `${Cliente}-${Planta}-${Fecha}.pdf`.replace(
-        /\s+/g,
-        "_",
-      );
-
-      const { uri } = await Print.printToFileAsync({ html: htmlContent });
-
-      const newUri = `${FileSystem.documentDirectory}${nombreArchivo}`;
-      await FileSystem.moveAsync({
-        from: uri,
-        to: newUri,
+  
+      if (!planta_id || !cliente_id) {
+        alert("Faltan IDs de cliente o planta. Verifique los datos antes de guardar.");
+        return;
+      }
+  
+      const { data, error } = await insertarDatosEnSupabase({
+        planta_id,
+        cliente_id,
+        Fecha,
+        vivos,
+        muertos,
+        consumo,
       });
-
-      await Sharing.shareAsync(newUri);
+  
+      if (error) {
+        console.error("Error al guardar en Supabase:", error);
+        Alert.alert("Error", "No se pudo guardar en Supabase");
+        return;
+      }
+  
+      const htmlContent = generarHTML(logoBase64, firmaBase64, dataSections);
+      const nombreArchivo = generarNombreArchivo(Cliente, Planta, Fecha);
+  
+      await guardarYCompartirPDF(htmlContent, nombreArchivo);
     } catch (error) {
-      console.error("Error al manejar la exportación:", error);
+      console.error("Error al manejar la exportación:", error.message || error);
     }
   };
+  
 
   if (isEmpty) {
     return (

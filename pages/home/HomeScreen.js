@@ -30,6 +30,12 @@ export default function HomeScreen({ navigation }) {
         >
           <Text style={styles.buttonText}>Certificados</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => navigation.navigate("Estadisticas")}
+        >
+          <Text style={styles.buttonText}>Estadisticas</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );

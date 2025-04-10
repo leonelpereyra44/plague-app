@@ -10,23 +10,13 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import globalStyles from "../../utils/styles/globalStyles";
+import { useData } from '../../utils/DataContext';
 
 export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
-  const roedoresVivos = [
-    { label: "Si", value: "si" },
-    { label: "No", value: "no" },
-    { label: "N.A", value: "N.A" },
-    { label: "R.P", value: "R.P" },
-  ];
 
-  const roedoresMuertos = [
-    { label: "Si", value: "si" },
-    { label: "No", value: "no" },
-    { label: "N.A", value: "N.A" },
-    { label: "R.P", value: "R.P" },
-  ];
+  const { setContadores } = useData();
 
-  const materiaFecal = [
+  const opcionesGenericas = [
     { label: "Si", value: "si" },
     { label: "No", value: "no" },
     { label: "N.A", value: "N.A" },
@@ -42,20 +32,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
     { label: "R.P", value: "R.P" },
   ];
 
-  const consumoCebos = [
-    { label: "Si", value: "si" },
-    { label: "No", value: "no" },
-    { label: "N.A", value: "N.A" },
-    { label: "R.P", value: "R.P" },
-  ];
-
-  const reposicionRoedores = [
-    { label: "Si", value: "si" },
-    { label: "No", value: "no" },
-    { label: "N.A", value: "N.A" },
-    { label: "R.P", value: "R.P" },
-  ];
-
   const [cajaRoedores, setCajaRoedores] = useState("");
   const [selectedRoedoresVivos, setSelectedRoedoresVivos] = useState("");
   const [selectedRoedoresMuertos, setSelectedRoedoresMuertos] = useState("");
@@ -65,9 +41,9 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
   const [selectedReposicionRoedores, setSelectedReposicionRoedores] =
     useState("");
   const [observaciones, setObservaciones] = useState("");
-
   const [modalVisible, setModalVisible] = useState(false);
   const [cajaEliminar, setCajaEliminar] = useState("");
+  const [error, setError] = useState("");
 
   const LimpiarRoedores = () => {
     setCajaRoedores("");
@@ -79,8 +55,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
     setSelectedReposicionRoedores("");
     setObservaciones("");
   };
-
-  const [error, setError] = useState("");
 
   const handleCajaChange = (value) => {
     if (/^\d*$/.test(value)) {
@@ -101,12 +75,21 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
       !selectedConsumoCebos ||
       !selectedReposicionRoedores
     ) {
-      alert("Por favor, complete todos los campos");
+      alert("Por favor, complete todos los campos obligatorios");
       return;
     }
-
+  
+    const numeroCaja = parseInt(cajaRoedores, 10);
+  
+    // Validación de caja duplicada
+    const cajaYaExiste = roedoresData.some((item) => item.Caja === numeroCaja);
+    if (cajaYaExiste) {
+      alert(`La caja N° ${numeroCaja} ya fue ingresada`);
+      return;
+    }
+  
     const newEntry = {
-      Caja: parseInt(cajaRoedores, 10),
+      Caja: numeroCaja,
       Vivos: selectedRoedoresVivos,
       Muertos: selectedRoedoresMuertos,
       TipoTrampa: selectedTipoTrampa,
@@ -115,24 +98,51 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
       Reposición: selectedReposicionRoedores,
       Observaciones: observaciones,
     };
-
+  
     setRoedoresData((prevData) => {
-      const updatedData = [...prevData, newEntry];
-      updatedData.sort((a, b) => a.Caja - b.Caja);
+      const updatedData = [...prevData, newEntry].sort((a, b) => a.Caja - b.Caja);
+  
+      const { vivos, muertos, consumo } = contarTotalesFromArray(updatedData);
+  
+      // 👉 Actualizamos los contadores en el contexto
+      setContadores({ vivos, muertos, consumo });
+  
+      console.log(
+        "Datos guardados:",
+        "Vivos:",
+        vivos,
+        "Muertos:",
+        muertos,
+        "Consumo:",
+        consumo,
+      );
+  
       return updatedData;
     });
-
+  
     LimpiarRoedores();
     alert("Datos guardados con éxito");
   };
+  
 
-  const handleDelete = () => {
-    setModalVisible(true);
+  const contarTotalesFromArray = (data) => {
+    let vivos = 0;
+    let muertos = 0;
+    let consumo = 0;
+
+    data.forEach((item) => {
+      if (item.Vivos === "si") vivos += 1;
+      if (item.Muertos === "si") muertos += 1;
+      if (item.ConsumoCebos === "si") consumo += 1;
+    });
+
+    return { vivos, muertos, consumo };
   };
+
+  const handleDelete = () => setModalVisible(true);
 
   const confirmDelete = () => {
     const numeroCaja = parseInt(cajaEliminar, 10);
-
     if (isNaN(numeroCaja)) {
       alert("Debe ingresar un número válido.");
       return;
@@ -140,12 +150,10 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
 
     setRoedoresData((prevData) => {
       const updatedData = prevData.filter((entry) => entry.Caja !== numeroCaja);
-
       if (updatedData.length === prevData.length) {
         alert(`No se encontró la caja N° ${numeroCaja}`);
         return prevData;
       }
-
       alert(`Caja N° ${numeroCaja} eliminada correctamente`);
       return updatedData;
     });
@@ -205,7 +213,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           />
 
           <Dropdown
-            data={roedoresVivos}
+            data={opcionesGenericas}
             labelField="label"
             valueField="value"
             placeholder="Vivos *"
@@ -215,7 +223,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           />
 
           <Dropdown
-            data={roedoresMuertos}
+            data={opcionesGenericas}
             labelField="label"
             valueField="value"
             placeholder="Muertos *"
@@ -235,7 +243,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           />
 
           <Dropdown
-            data={materiaFecal}
+            data={opcionesGenericas}
             labelField="label"
             valueField="value"
             placeholder="Materia Fecal *"
@@ -245,7 +253,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           />
 
           <Dropdown
-            data={consumoCebos}
+            data={opcionesGenericas}
             labelField="label"
             valueField="value"
             placeholder="Consumo *"
@@ -255,7 +263,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
           />
 
           <Dropdown
-            data={reposicionRoedores}
+            data={opcionesGenericas}
             labelField="label"
             valueField="value"
             placeholder="Reposición *"
@@ -266,7 +274,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
 
           <TextInput
             style={globalStyles.input}
-            onChangeText={(value) => setObservaciones(value)}
+            onChangeText={setObservaciones}
             value={observaciones}
             placeholder="Observaciones"
             multiline
@@ -288,31 +296,6 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
             </TouchableOpacity>
           </View>
         </View>
-
-        {roedoresData.length > 0 && (
-          <View style={globalStyles.spreadsheet}>
-            <View style={globalStyles.headerData}>
-              <Text style={globalStyles.headerText}>Caja N°</Text>
-              <Text style={globalStyles.headerText}>Vivos</Text>
-              <Text style={globalStyles.headerText}>Muertos</Text>
-              <Text style={globalStyles.headerText}>Tipo Trampa</Text>
-              <Text style={globalStyles.headerText}>Consumo</Text>
-              <Text style={globalStyles.headerText}>Reposición</Text>
-              <Text style={globalStyles.headerText}>Observaciones</Text>
-            </View>
-            {roedoresData.map((entry, index) => (
-              <View style={globalStyles.containerData} key={index}>
-                <Text style={globalStyles.column}>{entry.Caja}</Text>
-                <Text style={globalStyles.column}>{entry.Vivos}</Text>
-                <Text style={globalStyles.column}>{entry.Muertos}</Text>
-                <Text style={globalStyles.column}>{entry.TipoTrampa}</Text>
-                <Text style={globalStyles.column}>{entry.ConsumoCebos}</Text>
-                <Text style={globalStyles.column}>{entry.Reposición}</Text>
-                <Text style={globalStyles.column}>{entry.Observaciones}</Text>
-              </View>
-            ))}
-          </View>
-        )}
       </ScrollView>
     </>
   );

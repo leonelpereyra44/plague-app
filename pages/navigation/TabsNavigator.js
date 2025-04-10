@@ -10,6 +10,7 @@ import GenerarPlanilla from "../generarPlanilla";
 import Clientes from "../clientes";
 import Productos from "../productos";
 import Certificado from "../certificado";
+import Estadisticas from "../estadisticas";
 
 const Stack = createStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -44,6 +45,7 @@ function MainStack() {
       <Stack.Screen name="Clientes" component={Clientes} />
       <Stack.Screen name="Productos" component={Productos} />
       <Stack.Screen name="Certificado" component={Certificado} />
+      <Stack.Screen name="Estadisticas" component={Estadisticas} />
     </Stack.Navigator>
   );
 }

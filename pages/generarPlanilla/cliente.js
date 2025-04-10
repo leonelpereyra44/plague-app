@@ -31,7 +31,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
       if (error) {
         console.error("Error al obtener clientes:", error.message);
       } else {
-        console.log("Clientes obtenidos:", data);
+        // console.log("Clientes obtenidos:", data);
         setClientes(data); // Guardamos los datos de los clientes
       }
       setLoading(false);
@@ -50,7 +50,7 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
         if (error) {
           console.error("Error al obtener plantas:", error.message);
         } else {
-          console.log("Plantas obtenidas para el cliente:", data);
+          // console.log("Plantas obtenidas para el cliente:", data);
           setPlantas(data); // Guardamos las plantas filtradas
         }
       };
@@ -98,6 +98,8 @@ export default function Cliente({ onClose, clienteData, setClienteData }) {
       Cliente: clienteNombre,
       Planta: plantaNombre,
       Fecha: fechaDelDia,
+      planta_id: selectedPlantaCliente, // ID de la planta
+      cliente_id: selectedCliente, // ID del cliente
     };
 
     // Actualizar clienteData con el nuevo registro
