@@ -205,25 +205,28 @@ export default function Estadisticas() {
           ([nombrePlanta, { labels, data }]) => (
             <View key={nombrePlanta} style={styles.graficoContainer}>
               <Text style={styles.subtitulo}>{nombrePlanta}</Text>
-              <BarChart
-                data={{
-                  labels,
-                  datasets: [{ data }],
-                }}
-                width={screenWidth}
-                height={220}
-                fromZero
-                yAxisLabel=""
-                chartConfig={{
-                  backgroundGradientFrom: "#1b3b4f",
-                  backgroundGradientTo: "#1b3b4f",
-                  decimalPlaces: 0,
-                  color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
-                  labelColor: () => "#ffffff",
-                }}
-                style={{ marginVertical: 8, borderRadius: 16 }}
-                verticalLabelRotation={30}
-              />
+              <ScrollView horizontal>
+                <BarChart
+                  data={{
+                    labels,
+                    datasets: [{ data }],
+                  }}
+                  width={Math.max(screenWidth, labels.length * 60)}
+                  height={300}
+                  fromZero={true}
+                  yAxisInterval={1} // 👈 esto fuerza pasos de a 1
+                  yAxisLabel=""
+                  chartConfig={{
+                    backgroundGradientFrom: "#1b3b4f",
+                    backgroundGradientTo: "#1b3b4f",
+                    decimalPlaces: 0, // 👈 sin decimales
+                    color: (opacity = 1) => `rgba(76, 175, 80, ${opacity})`,
+                    labelColor: () => "#ffffff",
+                  }}
+                  style={{ marginVertical: 8, borderRadius: 16 }}
+                  verticalLabelRotation={30}
+                />
+              </ScrollView>
             </View>
           ),
         )
