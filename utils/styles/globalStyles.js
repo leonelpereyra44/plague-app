@@ -72,6 +72,12 @@ const globalStyles = StyleSheet.create({
     marginTop: 10,
     width: "48%",
   },
+  previewButton: {
+    backgroundColor: "#3498db",
+    padding: 10,
+    borderRadius: 5,
+    marginTop: 10,
+  },
   // estilos del formulario
   container: {
     flex: 1,

@@ -10,10 +10,9 @@ import {
 } from "react-native";
 import { Dropdown } from "react-native-element-dropdown";
 import globalStyles from "../../utils/styles/globalStyles";
-import { useData } from '../../utils/DataContext';
+import { useData } from "../../utils/DataContext";
 
 export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
-
   const { setContadores } = useData();
 
   const opcionesGenericas = [
@@ -44,6 +43,7 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
   const [modalVisible, setModalVisible] = useState(false);
   const [cajaEliminar, setCajaEliminar] = useState("");
   const [error, setError] = useState("");
+  const [modalPreviewVisible, setModalPreviewVisible] = useState(false);
 
   const LimpiarRoedores = () => {
     setCajaRoedores("");
@@ -78,16 +78,16 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
       alert("Por favor, complete todos los campos obligatorios");
       return;
     }
-  
+
     const numeroCaja = parseInt(cajaRoedores, 10);
-  
+
     // Validación de caja duplicada
     const cajaYaExiste = roedoresData.some((item) => item.Caja === numeroCaja);
     if (cajaYaExiste) {
       alert(`La caja N° ${numeroCaja} ya fue ingresada`);
       return;
     }
-  
+
     const newEntry = {
       Caja: numeroCaja,
       Vivos: selectedRoedoresVivos,
@@ -98,15 +98,17 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
       Reposición: selectedReposicionRoedores,
       Observaciones: observaciones,
     };
-  
+
     setRoedoresData((prevData) => {
-      const updatedData = [...prevData, newEntry].sort((a, b) => a.Caja - b.Caja);
-  
+      const updatedData = [...prevData, newEntry].sort(
+        (a, b) => a.Caja - b.Caja,
+      );
+
       const { vivos, muertos, consumo } = contarTotalesFromArray(updatedData);
-  
+
       // 👉 Actualizamos los contadores en el contexto
       setContadores({ vivos, muertos, consumo });
-  
+
       console.log(
         "Datos guardados:",
         "Vivos:",
@@ -116,14 +118,13 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
         "Consumo:",
         consumo,
       );
-  
+
       return updatedData;
     });
-  
+
     LimpiarRoedores();
     alert("Datos guardados con éxito");
   };
-  
 
   const contarTotalesFromArray = (data) => {
     let vivos = 0;
@@ -196,6 +197,50 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
                 <Text style={globalStyles.buttonText}>Eliminar</Text>
               </TouchableOpacity>
             </View>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalPreviewVisible}
+        onRequestClose={() => setModalPreviewVisible(false)}
+      >
+        <View style={globalStyles.modalContainer}>
+          <View style={[globalStyles.modalContent, { maxHeight: "80%" }]}>
+            <Text style={globalStyles.modalTitle}>Control de Cajas</Text>
+            <ScrollView style={{ marginBottom: 10 }}>
+              {roedoresData.length === 0 ? (
+                <Text>No hay datos cargados.</Text>
+              ) : (
+                roedoresData.map((item, index) => (
+                  <View
+                    key={index}
+                    style={{
+                      marginBottom: 10,
+                      borderBottomWidth: 1,
+                      borderColor: "#ccc",
+                      paddingBottom: 5,
+                    }}
+                  >
+                    <Text style={styles.cajaPreview}>Caja: {item.Caja}</Text>
+                    <Text>Vivos: {item.Vivos}</Text>
+                    <Text>Muertos: {item.Muertos}</Text>
+                    <Text>Tipo de Trampa: {item.TipoTrampa}</Text>
+                    <Text>Materia Fecal: {item.MateriaFecal}</Text>
+                    <Text>Consumo: {item.ConsumoCebos}</Text>
+                    <Text>Reposición: {item.Reposición}</Text>
+                    <Text>Obs: {item.Observaciones}</Text>
+                  </View>
+                ))
+              )}
+            </ScrollView>
+            <TouchableOpacity
+              style={globalStyles.cancelButton}
+              onPress={() => setModalPreviewVisible(false)}
+            >
+              <Text style={globalStyles.buttonText}>Cerrar</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </Modal>
@@ -295,10 +340,22 @@ export default function Roedores({ onClose, roedoresData, setRoedoresData }) {
               <Text style={globalStyles.buttonText}>Eliminar</Text>
             </TouchableOpacity>
           </View>
+          <TouchableOpacity
+            style={globalStyles.previewButton}
+            onPress={() => setModalPreviewVisible(true)}
+          >
+            <Text style={globalStyles.buttonText}>Previsualizar</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </>
   );
 }
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  cajaPreview: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 0,
+  },
+});
